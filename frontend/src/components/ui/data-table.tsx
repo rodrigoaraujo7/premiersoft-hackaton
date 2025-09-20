@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "./button";
 
+import * as icon from "lucide-react";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -88,7 +90,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Nenhum resultado encontrado.
                 </TableCell>
               </TableRow>
             )}
@@ -102,7 +104,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          <icon.ChevronLeft className="h-4 w-4" />
         </Button>
         <Button
           variant="outline"
@@ -110,7 +112,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          <icon.ChevronRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

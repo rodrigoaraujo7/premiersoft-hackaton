@@ -16,8 +16,8 @@ export const Route = createFileRoute("/medico")({
 const defaultData: Medico[] = [
   {
     id: "1",
-    nome_completo: "John Doe",
-    especialidade: "Cardiologist",
+    nome_completo: "João da Silva",
+    especialidade: "Cardiologista",
     cidade: 1,
   },
 ];
@@ -35,7 +35,7 @@ const columns: ColumnDef<Medico>[] = [
           variant={"ghost"}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email <ArrowUpDown className="ml-2 h-4 w-4" />
+          Nome <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },

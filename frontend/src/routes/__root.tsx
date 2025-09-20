@@ -13,8 +13,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 
 import { tv } from "tailwind-variants";
+
+import { Upload } from "lucide-react";
 
 type Route = {
   name: string;
@@ -42,29 +45,38 @@ const link = tv({
 
 const RootLayout = () => {
   return (
-    <main className="grid grid-cols-1 min-h-screen md:grid-cols-[1fr_768px_1fr]">
-      <div className="col-start-1 col-end-2 md:col-start-2 md:col-end-3">
-        <div className="hidden justify-between gap-4 p-4 md:flex md:px-0">
-          {routes.map((route, index) => (
-            <CustomLink to={route.path} key={index}>
-              {route.name}
-            </CustomLink>
-          ))}
-        </div>
+    <main>
+      <header className="grid grid-cols-1 md:grid-cols-[1fr_768px_1fr] fixed top-0 left-0 right-0 z-10 w-full p-2 border-b border-gray-200 bg-white xl:grid-cols-[1fr_1280px_1fr]">
+        <Button className="col-start-1 col-end-2 md:col-start-2 md:col-end-3 justify-self-end cursor-pointer">
+          <Upload className="size-4" />
+          Enviar dados
+        </Button>
+      </header>
 
-        <Accordion className="p-4 md:hidden" type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Categorias</AccordionTrigger>
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_768px_1fr] p-2 mt-16 xl:grid-cols-[1fr_1280px_1fr]">
+        <div className="col-start-1 col-end-2 md:col-start-2 md:col-end-3">
+          <div className="hidden justify-between gap-4 p-4 md:flex md:px-0">
             {routes.map((route, index) => (
-              <AccordionContent key={index}>
-                <Link to={route.path}>{route.name}</Link>
-              </AccordionContent>
+              <CustomLink to={route.path} key={index}>
+                {route.name}
+              </CustomLink>
             ))}
-          </AccordionItem>
-        </Accordion>
+          </div>
 
-        <Outlet />
-        <TanStackRouterDevtools />
+          <Accordion className="md:hidden" type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Categorias</AccordionTrigger>
+              {routes.map((route, index) => (
+                <AccordionContent key={index}>
+                  <Link to={route.path}>{route.name}</Link>
+                </AccordionContent>
+              ))}
+            </AccordionItem>
+          </Accordion>
+
+          <Outlet />
+          <TanStackRouterDevtools />
+        </div>
       </div>
     </main>
   );
