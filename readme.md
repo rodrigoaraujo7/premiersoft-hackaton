@@ -73,7 +73,6 @@ Premiersoft Hackaton is a collaborative project that integrates multiple service
 ### Built With
 
 - [![TypeScript][TS-badge]][TS-url]
-- [TS-url]: https://www.typescriptlang.org/
 - [![Python][Python-badge]][Python-url]
 - [![Postgres][Postgres-badge]][Postgres-url]
 - [![Docker][Docker-badge]][Docker-url]
