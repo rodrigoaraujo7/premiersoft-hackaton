@@ -43,11 +43,11 @@ export function AreaChart<T>({
 }: AreaChartProps<T>) {
   return (
     <Card className="pt-0">
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
         <div className="grid flex-1 gap-1">
           <CardTitle>{label}</CardTitle>
         </div>
-        {/* TODO: talvez colocar esse select através de props */}
+
         {select && (
           <Select defaultValue={selectOptions?.[0].value}>
             <SelectTrigger
@@ -57,7 +57,6 @@ export function AreaChart<T>({
               <SelectValue placeholder="Selecione um estado" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              {/* TODO: Listar todos os estados e aplicar o filtro */}
               {selectOptions?.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}

@@ -44,7 +44,7 @@ export function RadarChart<T>({
         <div className="grid flex-1 gap-1">
           <CardTitle>{label}</CardTitle>
         </div>
-        {/* TODO: talvez colocar esse select através de props */}
+
         {select && (
           <Select defaultValue={selectOptions?.[0].value}>
             <SelectTrigger
@@ -54,7 +54,6 @@ export function RadarChart<T>({
               <SelectValue placeholder="Selecione um estado" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              {/* TODO: Listar todos os estados e aplicar o filtro */}
               {selectOptions?.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}

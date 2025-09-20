@@ -37,12 +37,11 @@ export const PieChart = <T,>({
 }: PieChartProps<T>) => {
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex items-center gap-2 space-y-0 sm:flex-row">
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
         <div className="grid flex-1 gap-1">
           <CardTitle>{label}</CardTitle>
         </div>
 
-        {/* TODO: Fazer o filtro de acordo com o select */}
         {select && (
           <Select defaultValue={selectOptions?.[0].value}>
             <SelectTrigger
