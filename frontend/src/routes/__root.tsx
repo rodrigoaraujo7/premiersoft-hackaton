@@ -34,10 +34,10 @@ const routes: Route[] = [
 ];
 
 const link = tv({
-  base: "flex-1 items-center justify-center w-full text-center px-2 py-4 rounded-md transition-colors",
+  base: "flex-1 items-center justify-center w-full text-center p-2 rounded-md transition-colors",
   variants: {
     isActive: {
-      true: "bg-gray-100",
+      true: "bg-black text-white",
       false: "",
     },
   },
@@ -46,14 +46,14 @@ const link = tv({
 const RootLayout = () => {
   return (
     <main>
-      <header className="grid grid-cols-1 md:grid-cols-[1fr_768px_1fr] fixed top-0 left-0 right-0 z-10 w-full p-2 border-b border-gray-200 bg-white xl:grid-cols-[1fr_1280px_1fr]">
+      <header className="grid grid-cols-1 md:grid-cols-[1fr_768px_1fr] fixed top-0 left-0 right-0 z-10 w-full p-2 border-b border-gray-200 bg-white">
         <Button className="col-start-1 col-end-2 md:col-start-2 md:col-end-3 justify-self-end cursor-pointer">
           <Upload className="size-4" />
           Enviar dados
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_768px_1fr] p-2 mt-16 xl:grid-cols-[1fr_1280px_1fr]">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_768px_1fr] p-2 mt-16">
         <div className="col-start-1 col-end-2 md:col-start-2 md:col-end-3">
           <div className="hidden justify-between gap-4 p-4 md:flex md:px-0">
             {routes.map((route, index) => (
