@@ -7,7 +7,7 @@ export interface FileData {
 }
 
 export async function readAllFiles(): Promise<FileData[]> {
-  const resourcesDir = path.join(__dirname, '../../resources');
+  const resourcesDir = path.join(__dirname, '../resources');
 
   if (!fs.existsSync(resourcesDir)) {
     throw new Error(`Resources directory not found: ${resourcesDir}`);
@@ -18,6 +18,7 @@ export async function readAllFiles(): Promise<FileData[]> {
 
   for (const file of files) {
     const filePath = path.join(resourcesDir, file);
+    if (!fs.statSync(filePath).isFile()) continue;
     const content = fs.readFileSync(filePath, 'utf-8');
 
     let parsedContent: any = content;
