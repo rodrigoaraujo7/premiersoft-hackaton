@@ -5,7 +5,8 @@
 <br />
 <div align="center">
   <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton">
-    <img src="public/logonew/logo.png" alt="Logo" width="96" height="96">
+    <img width="823" height="861" alt="EstruturaGeraldodocker drawio" src="https://github.com/user-attachments/assets/08ad2777-1c10-40a3-aa8b-10b46281ad19" />
+
   </a>
 
   <h3 align="center">Premiersoft Hackaton</h3>
