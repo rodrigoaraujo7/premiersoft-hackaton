@@ -94,6 +94,11 @@ const pieChartConfig = {
   },
 } satisfies ChartConfig;
 
+const selectOptions = [
+  { value: "sc", label: "Santa Catarina" },
+  { value: "sp", label: "São Paulo" },
+];
+
 function RouteComponent() {
   const data = defaultData;
 
@@ -108,12 +113,13 @@ function RouteComponent() {
 
       <br />
 
-      {/* TODO: Colocar um select de estado para filtrar as cidades */}
       {/* TODO: mostrar a distribuição de médicos por cidade */}
       <PieChart
         chartConfig={pieChartConfig}
         chartData={pieChartData}
         label="Distribuição de médicos por cidade"
+        select
+        selectOptions={selectOptions}
       />
 
       <br />

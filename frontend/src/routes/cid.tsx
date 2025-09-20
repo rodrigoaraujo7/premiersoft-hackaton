@@ -45,17 +45,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const selectOptions = [{ value: "1", label: "CID" }];
+
 function RouteComponent() {
   const data = defaultData;
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Colocar um select para selecionar o CID */}
       {/* TODO: Mostrar quantidade de cid por região */}
       <RadarChart
         chartConfig={chartConfig}
         chartData={chartData}
         label="Quantidade de CID por região"
+        select
+        selectOptions={selectOptions}
       />
 
       <br />
