@@ -34,7 +34,7 @@ O Premiersoft Hackaton é um projeto colaborativo que integra diversos serviços
 - Configurações de gráficos em várias páginas (frontend)
 - Utilitários Python para processamento e migração de dados
 - Base de código colaborativa e multilíngue (TS, JS, Python, CSS)
-- 
+  
 ### Construido com
 
 - [![TypeScript][TS-badge]][TS-url]
