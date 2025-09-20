@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { type ColumnDef } from "@tanstack/react-table";
+
+import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+
+import { ArrowUpDown } from "lucide-react";
+
+import type { Medico } from "@/types/medicos";
+
 export const Route = createFileRoute("/medico")({
   component: Medico,
 });
-
-import { type ColumnDef } from "@tanstack/react-table";
-
-import type { Medico } from "@/types/medicos";
-import { DataTable } from "@/components/ui/data-table";
 
 const defaultData: Medico[] = [
   {
@@ -21,11 +25,20 @@ const defaultData: Medico[] = [
 const columns: ColumnDef<Medico>[] = [
   {
     accessorKey: "id",
-    header: () => <div className="text-right">ID</div>,
+    header: "ID",
   },
   {
     accessorKey: "nome_completo",
-    header: "Nome Completo",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "especialidade",
