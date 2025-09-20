@@ -22,7 +22,7 @@ type Route = {
 };
 
 const routes: Route[] = [
-  { name: "Médicos", path: "/" },
+  { name: "Médicos", path: "/medico" },
   { name: "Pacientes", path: "/pacientes" },
   { name: "Hospitais", path: "/hospitais" },
   { name: "Estados", path: "/estados" },
@@ -31,7 +31,7 @@ const routes: Route[] = [
 ];
 
 const link = tv({
-  base: "flex-1 items-center justify-center w-full text-center px-2 py-4 border-[1px] border-gray-100 rounded-md transition-colors",
+  base: "flex-1 items-center justify-center w-full text-center px-2 py-4 rounded-md transition-colors",
   variants: {
     isActive: {
       true: "bg-gray-100",
@@ -62,8 +62,6 @@ const RootLayout = () => {
             ))}
           </AccordionItem>
         </Accordion>
-
-        <hr />
 
         <Outlet />
         <TanStackRouterDevtools />
