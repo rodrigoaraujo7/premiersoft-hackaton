@@ -45,7 +45,7 @@ export const BarChart = <T,>({
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
             <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" />
+            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
           </RechartBarChart>
         </ChartContainer>
       </CardContent>
