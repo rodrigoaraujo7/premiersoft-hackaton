@@ -14,41 +14,8 @@
   <p align="center">
     Projeto de hackathon colaborativo com backend, frontend e pipelines de dados. <br/>
     Apresentando configuração Dockerizada do Postgres, visualizações de gráficos e utilitários Python.
-    <br />
-    <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton">View Repo</a>
-    &middot;
-    <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
-
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">Sobre o projeto</a>
-      <ul>
-        <li><a href="#features">Funções</a></li>
-        <li><a href="#built-with">Construido Com</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Começando</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisitos</a></li>
-        <li><a href="#installation">Instalação</a></li>
-        <li><a href="#docker-setup">Docker Setup</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usagem</a></li>
-    <li><a href="#license">Licensa</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
 
 ## Sobre o Projeto
 
@@ -74,8 +41,6 @@ O Premiersoft Hackaton é um projeto colaborativo que integra diversos serviços
 - [![Python][Python-badge]][Python-url]
 - [![Postgres][Postgres-badge]][Postgres-url]
 - [![Docker][Docker-badge]][Docker-url]
-
-<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
 ## Começando
 
@@ -124,26 +89,20 @@ docker-compose build
 docker-compose up
 ```
 
-<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
-
 ## Usagem
 
 - Rodar os serviços backend com `npm run dev`
 - Acesse os Graficos do frontend em `http://localhost:3000`
 - Gerencie DB com `psql` dentro do container do Docker
 
-<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
-
 See the [open issues](https://github.com/rodrigoaraujo7/premiersoft-hackaton/issues) for more.
 
-<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
 
 ## Licensa
 
 Distributed under the MIT License. See `LICENSE` for details.
 
-<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
 ## Conhecimentos
 
