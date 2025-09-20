@@ -12,7 +12,7 @@ export class PatientUploadService {
     const fileExtension = path.extname(data.filename).toLowerCase();
 
     if (!this.allowedFormats.includes(fileExtension)) {
-      throw new Error(`Formato de aceito invalido, só são aceitos os formatos: ${this.allowedFormats.join(', ')}`);
+      throw new Error(`Formato de arquivo invalido, só são aceitos os formatos: ${this.allowedFormats.join(', ')}`);
     }
 
     const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);

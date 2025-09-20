@@ -1,5 +1,5 @@
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { aiService } from './ai';
+import { aiService } from './AI/ai';
 import { servicesRoutes } from './routers/services';
 import { patientUploadRoutes } from './routers/patientUpload';
 import multipart from '@fastify/multipart';
