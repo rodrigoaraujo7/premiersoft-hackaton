@@ -1,0 +1,50 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+<<<<<<< Updated upstream
+  "main": "src/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node ./src/server.ts",
+    "dev": "ts-node ./src/server.ts",
+=======
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+>>>>>>> Stashed changes
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream:backend/package.json
+    "axios": "^1.12.2",
+    "fastify": "^5.6.0"
+=======
+=======
+>>>>>>> Stashed changes
+    "@google/genai": "^1.20.0",
+    "axios": "^1.6.0",
+    "fastify": "^5.6.0",
+    "mime": "^4.1.0"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes:backend/package-b.json
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+=======
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+>>>>>>> Stashed changes
+  }
+}

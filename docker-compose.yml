@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    build: .
+    # Ou use a imagem diretamente sem Dockerfile:
+    # image: postgres:15-alpine
+    container_name: postgres_db
+    restart: unless-stopped
+    
+    environment:
+      POSTGRES_DB: hackathon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    
+    ports:
+      - "5432:5432"
+    
+    volumes:
+      # Volume nomeado para persistir dados entre reinicializações
+      - postgres_data:/var/lib/postgresql/data
+      # Volume para scripts de inicialização (opcional)
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    
+    networks:
+      - app_network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  # Volume nomeado compartilhado entre o time
+  postgres_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge
