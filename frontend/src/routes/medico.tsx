@@ -3,14 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
-
-import { ArrowUpDown } from "lucide-react";
+import { BarChart } from "@/components/ui/bar-chart";
+import { PieChart } from "@/components/ui/pie-chart";
 
 import type { Medico } from "@/types/medicos";
+import type { ChartConfig } from "@/components/ui/chart";
 
 export const Route = createFileRoute("/medico")({
-  component: Medico,
+  component: RouteComponent,
 });
 
 const defaultData: Medico[] = [
@@ -29,16 +29,7 @@ const columns: ColumnDef<Medico>[] = [
   },
   {
     accessorKey: "nome_completo",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nome <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Nome",
   },
   {
     accessorKey: "especialidade",
@@ -50,12 +41,90 @@ const columns: ColumnDef<Medico>[] = [
   },
 ];
 
-function Medico() {
+const barChartData = [
+  { month: "Jan", desktop: 100, mobile: 50 },
+  { month: "Feb", desktop: 150, mobile: 70 },
+  { month: "Mar", desktop: 120, mobile: 60 },
+  { month: "Apr", desktop: 180, mobile: 90 },
+  { month: "May", desktop: 130, mobile: 75 },
+];
+
+const barchartConfig = {
+  desktop: {
+    label: "Categoria 1",
+    color: "#171717",
+  },
+  mobile: {
+    label: "Categoria 2",
+    color: "#404040",
+  },
+} satisfies ChartConfig;
+
+const pieChartData = [
+  { browser: "chrome", visitors: 275, fill: "#171717" },
+  { browser: "safari", visitors: 200, fill: "#404040" },
+  { browser: "firefox", visitors: 187, fill: "#737373" },
+  { browser: "edge", visitors: 173, fill: "#d4d4d4" },
+  { browser: "other", visitors: 90, fill: "#f5f5f5" },
+];
+
+const pieChartConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  chrome: {
+    label: "Chrome",
+    color: "var(--chart-1)",
+  },
+  safari: {
+    label: "Safari",
+    color: "var(--chart-2)",
+  },
+  firefox: {
+    label: "Firefox",
+    color: "var(--chart-3)",
+  },
+  edge: {
+    label: "Edge",
+    color: "var(--chart-4)",
+  },
+  other: {
+    label: "Other",
+    color: "var(--chart-5)",
+  },
+} satisfies ChartConfig;
+
+const selectOptions = [
+  { value: "sc", label: "Santa Catarina" },
+  { value: "sp", label: "São Paulo" },
+];
+
+function RouteComponent() {
   const data = defaultData;
 
   return (
-    <div className="container mx-auto py-10">
+    <section className="container mx-auto py-10">
+      {/* TODO: Mostrar quantos médicos existem em cada especialidade */}
+      <BarChart
+        chartConfig={barchartConfig}
+        chartData={barChartData}
+        label="Quantidade de médicos por especialidade"
+      />
+
+      <br />
+
+      {/* TODO: mostrar a distribuição de médicos por cidade */}
+      <PieChart
+        chartConfig={pieChartConfig}
+        chartData={pieChartData}
+        label="Distribuição de médicos por cidade"
+        select
+        selectOptions={selectOptions}
+      />
+
+      <br />
+
       <DataTable data={data} columns={columns} />
-    </div>
+    </section>
   );
 }

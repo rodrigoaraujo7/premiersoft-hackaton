@@ -7,7 +7,7 @@ ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
 
 # Cria diretório para scripts de inicialização
-COPY init-scripts/ /docker-entrypoint-initdb.d/
+COPY migration/ /docker-entrypoint-initdb.d/
 
 # Expor a porta padrão do PostgreSQL
 EXPOSE 5432
