@@ -27,3 +27,17 @@ docker logs <CONTAINER_ID>
 ```` bash
 docker exec postgres_db psql -U postgres -d hackathon -c "SELECT 1;"
 ````
+
+#### Migrar as bases
+
+```` bash
+docker-compose down -v  # Remove volumes
+````
+
+```` bash
+docker-compose build
+````
+
+```` bash
+docker-compose up
+````
