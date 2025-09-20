@@ -1,5 +1,6 @@
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { aiService } from './ai';
+import { servicesRoutes } from './routers/services';
 
 // Type definitions
 interface ChatRequest {
@@ -19,7 +20,7 @@ app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
 // Simple AI chat endpoint
 app.post('/ai/chat', async (request: FastifyRequest<{ Body: ChatRequest }>, reply: FastifyReply) => {
   const { message } = request.body;
-  
+
   if (!message) {
     return reply.status(400).send({ error: 'Message is required' });
   }
@@ -31,6 +32,9 @@ app.post('/ai/chat', async (request: FastifyRequest<{ Body: ChatRequest }>, repl
 // Run the server!
 const start = async (): Promise<void> => {
   try {
+    // Register services routes
+    await servicesRoutes(app);
+
     await app.listen({ port: 3000, host: '0.0.0.0' });
     console.log('Server is running on port 3000');
   } catch (err) {
