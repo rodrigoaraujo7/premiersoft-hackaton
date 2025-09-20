@@ -1,5 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-
+import { GoogleGenAI } from '@google/genai';
 // Type definitions
 export interface AIConfig {
   apiKey?: string;
@@ -7,10 +6,10 @@ export interface AIConfig {
 }
 
 export interface Message {
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string;
-  tool_calls?: ToolCall[];
-  tool_call_id?: string;
+  role: 'user' | 'model';
+  parts: Array<{
+    text: string;
+  }>;
 }
 
 export interface ToolCall {
@@ -53,22 +52,32 @@ export interface AIResponse {
 export class AIService {
   private apiKey: string;
   private model: string;
-  private baseURL: string;
-  private client: AxiosInstance;
+  private ai: GoogleGenAI;
 
   constructor(config: AIConfig = {}) {
-    this.apiKey = config.apiKey || process.env.FRIENDLI_API_KEY || 'flp_IOXWZmimNdkT2PaZv2MbJXrsMZ4ITqzCJu98viZEHXt0ec';
-    this.model = config.model || 'deptumkw5lakgbo';
-    this.baseURL = 'https://api.friendli.ai/dedicated/v1';
+    this.apiKey = "AIzaSyAuEPbY5BFMv08CKNp8YDX5xxbtidGLkQQ";
+    this.model = config.model || 'gemini-2.5-pro';
     
-    this.client = axios.create({
-      baseURL: this.baseURL,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      timeout: 30000
+    this.ai = new GoogleGenAI({
+      apiKey: this.apiKey,
     });
+
+  }
+
+
+  /**
+   * Convert tools to Google GenAI function calling format
+   */
+  private convertToolsToGoogleGenAI(tools: any[]): any[] {
+    if (tools.length === 0) return [];
+    
+    return [{
+      functionDeclarations: tools.map(tool => ({
+        name: tool.function.name,
+        description: tool.function.description,
+        parameters: tool.function.parameters
+      }))
+    }];
   }
 
   /**
@@ -81,54 +90,190 @@ export class AIService {
     options: AIOptions = {}
   ): Promise<AIResponse> {
     try {
-      const messages: Message[] = [
+      // Convert tools to Google GenAI format
+      const googleGenAITools = this.convertToolsToGoogleGenAI(tools);
+
+      // Convert conversation history to Google GenAI format
+      const contents: Message[] = [
         ...conversationHistory,
         {
           role: 'user',
-          content: message
+          parts: [
+            {
+              text: message
+            }
+          ]
         }
       ];
 
-      const requestBody: any = {
-        model: this.model,
-        messages: messages,
-        max_tokens: options.maxTokens || 16384,
-        temperature: options.temperature || 0.6,
-        top_p: options.topP || 0.95,
-        stream: options.stream || false,
+      const config = {
+        tools: googleGenAITools,
         ...options
       };
 
-      // Add tools if provided
-      if (tools && tools.length > 0) {
-        requestBody.tools = tools;
-      }
+      if (options.stream) {
+        // Handle streaming response
+        const response = await this.ai.models.generateContentStream({
+          model: this.model,
+          config,
+          contents,
+        });
 
-      // Add stream_options if streaming is enabled
-      if (requestBody.stream) {
-        requestBody.stream_options = {
-          include_usage: true
+        let fullResponse = '';
+        let toolCalls: any[] = [];
+        
+        for await (const chunk of response) {
+          if (chunk.text) {
+            fullResponse += chunk.text;
+          }
+          // Handle function calls if present
+          if (chunk.functionCalls && chunk.functionCalls.length > 0) {
+            toolCalls.push(...chunk.functionCalls);
+          }
+        }
+
+        // Execute tool calls if any
+        if (toolCalls.length > 0) {
+          const toolResults: Message[] = [];
+          
+          for (const toolCall of toolCalls) {
+            const result = await this.executeGoogleGenAIToolCall(toolCall);
+            toolResults.push({
+              role: 'user',
+              parts: [
+                {
+                  text: `Tool call result for ${toolCall.name}: ${JSON.stringify(result)}`
+                }
+              ]
+            });
+          }
+
+          // Make another request with tool results
+          const updatedContents = [
+            ...contents,
+            {
+              role: 'model',
+              parts: [
+                {
+                  text: fullResponse
+                }
+              ]
+            },
+            ...toolResults
+          ];
+
+          const followUpResponse = await this.ai.models.generateContentStream({
+            model: this.model,
+            config,
+            contents: updatedContents,
+          });
+
+          let finalResponse = '';
+          for await (const chunk of followUpResponse) {
+            if (chunk.text) {
+              finalResponse += chunk.text;
+            }
+          }
+
+          return {
+            success: true,
+            data: {
+              choices: [{
+                message: {
+                  content: finalResponse
+                }
+              }]
+            }
+          };
+        }
+
+        return {
+          success: true,
+          data: {
+            choices: [{
+              message: {
+                content: fullResponse
+              }
+            }]
+          }
+        };
+      } else {
+        // Handle non-streaming response
+        const response = await this.ai.models.generateContent({
+          model: this.model,
+          config,
+          contents,
+        });
+
+        return {
+          success: true,
+          data: {
+            choices: [{
+              message: {
+                content: response.text || ''
+              }
+            }]
+          }
         };
       }
-
-      const response: AxiosResponse = await this.client.post('/chat/completions', requestBody);
-      
-      return {
-        success: true,
-        data: response.data,
-        usage: response.data.usage || null
-      };
 
     } catch (error: any) {
       console.error('AI Service Error:', error.message);
       
       return {
         success: false,
-        error: error.response?.data || error.message,
-        statusCode: error.response?.status || 500
+        error: error.message || 'Unknown error',
+        statusCode: 500
       };
     }
   }
+
+  /**
+   * Execute a Google GenAI function call
+   */
+  private async executeGoogleGenAIToolCall(toolCall: any): Promise<any> {
+    try {
+      const funcName = toolCall.name;
+      const args = toolCall.args || {};
+
+      // Handle tool calls here
+      return {
+        success: false,
+        error: `Tool execution not implemented: ${funcName}`
+      };
+
+    } catch (error) {
+      console.error('Error executing Google GenAI tool call:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Execute a tool call from the AI response
+   */
+  private async executeToolCall(toolCall: ToolCall): Promise<any> {
+    try {
+      const func = toolCall.function;
+      const args = JSON.parse(func.arguments);
+
+      // Handle tool calls here
+      return {
+        success: false,
+        error: `Tool execution not implemented: ${func.name}`
+      };
+
+    } catch (error) {
+      console.error('Error executing tool call:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
 }
 
 // Export default instance
