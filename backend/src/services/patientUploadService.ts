@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { DataConverter } from './dataConverter';
-import { RegrasPacientes } from './RegrasPacientes';
+import { RegrasPacientes } from '../controllers/RegrasPacientes';
 import { MultipartFile } from '@fastify/multipart';
 
 export class PatientUploadService {
