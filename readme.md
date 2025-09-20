@@ -1,4 +1,4 @@
-<!-- Improved compatibility of back to top link -->
+<!-- Improved compatibility of Voltar pro topo link -->
 <a id="readme-top"></a>
 
 <!-- PROJECT LOGO -->
@@ -11,8 +11,8 @@
   <h3 align="center">Premiersoft Hackaton</h3>
 
   <p align="center">
-    Collaborative hackathon project with backend, frontend, and data pipelines. <br/>
-    Featuring Dockerized Postgres setup, chart visualizations, and Python utilities.
+    Projeto de hackathon colaborativo com backend, frontend e pipelines de dados. <br/>
+    Apresentando configuração Dockerizada do Postgres, visualizações de gráficos e utilitários Python.
     <br />
     <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton"><strong>Explore the docs »</strong></a>
     <br />
@@ -29,65 +29,62 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#about-the-project">Sobre o projeto</a>
       <ul>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#features">Funções</a></li>
+        <li><a href="#built-with">Construido Com</a></li>
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#getting-started">Começando</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#prerequisites">Prerequisitos</a></li>
+        <li><a href="#installation">Instalação</a></li>
         <li><a href="#docker-setup">Docker Setup</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
+    <li><a href="#usage">Usagem</a></li>
+    <li><a href="#license">Licensa</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
-## About The Project
+## Sobre o Projeto
 
-Premiersoft Hackaton is a collaborative project that integrates multiple services:
+O Premiersoft Hackaton é um projeto colaborativo que integra diversos serviços:
 
-- Backend services for data processing
-- Frontend dashboards with charts
-- Dockerized Postgres for persistence
-- Python utilities and migration scripts
+- Serviços de back-end para processamento de dados
+- Painéis de front-end com gráficos
+- Postgres Dockerizado para persistência
+- Utilitários Python e scripts de migração
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Recursos
 
-### Features
-
-- PostgreSQL database containerized with Docker Compose
-- Automated migrations for database setup
-- Chart configurations across multiple pages (frontend)
-- Python utilities for data processing and migration
-- Collaborative, multi-language codebase (TS, JS, Python, CSS)
-
-### Built With
+- Banco de dados PostgreSQL em contêiner com Docker Compose
+- Migrações automatizadas para configuração de banco de dados
+- Configurações de gráficos em várias páginas (frontend)
+- Utilitários Python para processamento e migração de dados
+- Base de código colaborativa e multilíngue (TS, JS, Python, CSS)
+- 
+### Construido com
 
 - [![TypeScript][TS-badge]][TS-url]
 - [![Python][Python-badge]][Python-url]
 - [![Postgres][Postgres-badge]][Postgres-url]
 - [![Docker][Docker-badge]][Docker-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
-## Getting Started
+## Começando
 
-### Prerequisites
+### Prerequisitos
 
 - Node.js 18+
 - npm 9+
 - Docker & Docker Compose
 
-### Installation
+### Instalação
 
 1. Clone the repo
    ```sh
@@ -101,60 +98,60 @@ Premiersoft Hackaton is a collaborative project that integrates multiple service
 
 ### Docker Setup
 
-Run Postgres with Docker Compose:
+Rode Postgres com docker compose:
 
 ```sh
 docker-compose build
 docker-compose up
 ```
 
-Check if it’s running:
+checar se esta funcionando:
 ```sh
 docker ps
 docker logs <CONTAINER_ID>
 ```
 
-Test DB connection:
+Testar a conexão do DB:
 ```sh
 docker exec postgres_db psql -U postgres -d hackathon -c "SELECT 1;"
 ```
 
-Migrate databases:
+Migrar DB:
 ```sh
 docker-compose down -v
 docker-compose build
 docker-compose up
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
-## Usage
+## Usagem
 
-- Run backend services with `npm run dev`
-- Access frontend charts at `http://localhost:3000`
-- Manage DB with `psql` inside Docker container
+- Rodar os serviços backend com `npm run dev`
+- Acesse os Graficos do frontend em `http://localhost:3000`
+- Gerencie DB com `psql` dentro do container do Docker
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
 See the [open issues](https://github.com/rodrigoaraujo7/premiersoft-hackaton/issues) for more.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
 
-## License
+## Licensa
 
 Distributed under the MIT License. See `LICENSE` for details.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
-## Acknowledgments
+## Conhecimentos
 
 - [Docker](https://www.docker.com)
 - [Postgres](https://www.postgresql.org)
 - [Node.js](https://nodejs.org)
 - [Premiersoft Hackaton Contributors](https://github.com/rodrigoaraujo7/premiersoft-hackaton/graphs/contributors)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Voltar pro topo</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [TS-badge]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
