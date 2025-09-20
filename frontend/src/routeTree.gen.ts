@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PacientesRouteImport } from './routes/pacientes'
 import { Route as MunicipiosRouteImport } from './routes/municipios'
+import { Route as MedicoRouteImport } from './routes/medico'
 import { Route as HospitaisRouteImport } from './routes/hospitais'
 import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as CidRouteImport } from './routes/cid'
@@ -24,6 +25,11 @@ const PacientesRoute = PacientesRouteImport.update({
 const MunicipiosRoute = MunicipiosRouteImport.update({
   id: '/municipios',
   path: '/municipios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicoRoute = MedicoRouteImport.update({
+  id: '/medico',
+  path: '/medico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HospitaisRoute = HospitaisRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/cid': typeof CidRoute
   '/estados': typeof EstadosRoute
   '/hospitais': typeof HospitaisRoute
+  '/medico': typeof MedicoRoute
   '/municipios': typeof MunicipiosRoute
   '/pacientes': typeof PacientesRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/cid': typeof CidRoute
   '/estados': typeof EstadosRoute
   '/hospitais': typeof HospitaisRoute
+  '/medico': typeof MedicoRoute
   '/municipios': typeof MunicipiosRoute
   '/pacientes': typeof PacientesRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/cid': typeof CidRoute
   '/estados': typeof EstadosRoute
   '/hospitais': typeof HospitaisRoute
+  '/medico': typeof MedicoRoute
   '/municipios': typeof MunicipiosRoute
   '/pacientes': typeof PacientesRoute
 }
@@ -79,16 +88,25 @@ export interface FileRouteTypes {
     | '/cid'
     | '/estados'
     | '/hospitais'
+    | '/medico'
     | '/municipios'
     | '/pacientes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cid' | '/estados' | '/hospitais' | '/municipios' | '/pacientes'
+  to:
+    | '/'
+    | '/cid'
+    | '/estados'
+    | '/hospitais'
+    | '/medico'
+    | '/municipios'
+    | '/pacientes'
   id:
     | '__root__'
     | '/'
     | '/cid'
     | '/estados'
     | '/hospitais'
+    | '/medico'
     | '/municipios'
     | '/pacientes'
   fileRoutesById: FileRoutesById
@@ -98,6 +116,7 @@ export interface RootRouteChildren {
   CidRoute: typeof CidRoute
   EstadosRoute: typeof EstadosRoute
   HospitaisRoute: typeof HospitaisRoute
+  MedicoRoute: typeof MedicoRoute
   MunicipiosRoute: typeof MunicipiosRoute
   PacientesRoute: typeof PacientesRoute
 }
@@ -116,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/municipios'
       fullPath: '/municipios'
       preLoaderRoute: typeof MunicipiosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medico': {
+      id: '/medico'
+      path: '/medico'
+      fullPath: '/medico'
+      preLoaderRoute: typeof MedicoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hospitais': {
@@ -154,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   CidRoute: CidRoute,
   EstadosRoute: EstadosRoute,
   HospitaisRoute: HospitaisRoute,
+  MedicoRoute: MedicoRoute,
   MunicipiosRoute: MunicipiosRoute,
   PacientesRoute: PacientesRoute,
 }
