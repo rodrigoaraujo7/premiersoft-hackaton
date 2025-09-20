@@ -1,10 +1,62 @@
-const axios = require('axios');
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+
+// Type definitions
+export interface AIConfig {
+  apiKey?: string;
+  model?: string;
+}
+
+export interface Message {
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content: string;
+  tool_calls?: ToolCall[];
+  tool_call_id?: string;
+}
+
+export interface ToolCall {
+  id: string;
+  type: 'function';
+  function: {
+    name: string;
+    arguments: string;
+  };
+}
+
+export interface Tool {
+  type: 'function';
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, any>;
+  };
+}
+
+export interface AIOptions {
+  maxTokens?: number;
+  temperature?: number;
+  topP?: number;
+  stream?: boolean;
+  [key: string]: any;
+}
+
+export interface AIResponse {
+  success: boolean;
+  data?: any;
+  error?: any;
+  statusCode?: number;
+  usage?: any;
+}
 
 /**
  * AI Service Module with streaming and tool calling support
  */
-class AIService {
-  constructor(config = {}) {
+export class AIService {
+  private apiKey: string;
+  private model: string;
+  private baseURL: string;
+  private client: AxiosInstance;
+
+  constructor(config: AIConfig = {}) {
     this.apiKey = config.apiKey || process.env.FRIENDLI_API_KEY || 'flp_IOXWZmimNdkT2PaZv2MbJXrsMZ4ITqzCJu98viZEHXt0ec';
     this.model = config.model || 'deptumkw5lakgbo';
     this.baseURL = 'https://api.friendli.ai/dedicated/v1';
@@ -21,15 +73,15 @@ class AIService {
 
   /**
    * Send a message to the AI with streaming and tool calling support
-   * @param {string} message - User message
-   * @param {Array} conversationHistory - Previous conversation messages
-   * @param {Array} tools - Available tools for the AI to call
-   * @param {Object} options - Additional options
-   * @returns {Promise<Object>} AI response
    */
-  async sendMessage(message, conversationHistory = [], tools = [], options = {}) {
+  async sendMessage(
+    message: string,
+    conversationHistory: Message[] = [],
+    tools: Tool[] = [],
+    options: AIOptions = {}
+  ): Promise<AIResponse> {
     try {
-      const messages = [
+      const messages: Message[] = [
         ...conversationHistory,
         {
           role: 'user',
@@ -37,7 +89,7 @@ class AIService {
         }
       ];
 
-      const requestBody = {
+      const requestBody: any = {
         model: this.model,
         messages: messages,
         max_tokens: options.maxTokens || 16384,
@@ -59,7 +111,7 @@ class AIService {
         };
       }
 
-      const response = await this.client.post('/chat/completions', requestBody);
+      const response: AxiosResponse = await this.client.post('/chat/completions', requestBody);
       
       return {
         success: true,
@@ -67,7 +119,7 @@ class AIService {
         usage: response.data.usage || null
       };
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('AI Service Error:', error.message);
       
       return {
@@ -79,8 +131,5 @@ class AIService {
   }
 }
 
-// Export the class and create a default instance
-module.exports = {
-  AIService,
-  aiService: new AIService()
-};
+// Export default instance
+export const aiService = new AIService();
