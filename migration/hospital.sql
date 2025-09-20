@@ -1,6 +1,5 @@
-
 -- Criação da tabela hospitais
-CREATE TABLE IF NOT EXISTS hospitais (
+CREATE TABLE if NOT EXISTS hospitais (
   codigo UUID PRIMARY KEY,
   nome TEXT,
   cod_municipio TEXT,
