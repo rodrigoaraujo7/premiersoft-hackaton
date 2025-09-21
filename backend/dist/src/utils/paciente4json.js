@@ -25,7 +25,7 @@ class Paciente4json {
         await fs_1.promises.mkdir(this.outputDir, { recursive: true });
         // Generate unique filename (e.g., based on timestamp)
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const fileName = `patient-data-${timestamp}.json`;
+        const fileName = `paciente-data-${timestamp}.json`;
         const filePath = path_1.default.join(this.outputDir, fileName);
         try {
             // Write data to JSON file

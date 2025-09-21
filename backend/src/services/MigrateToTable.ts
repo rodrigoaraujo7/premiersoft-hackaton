@@ -219,6 +219,38 @@ export class MigrateToTable {
     }
   }
 
+  // Método para inserção segura de pacientes
+  async insertPaciente(pacienteData: any): Promise<void> {
+    try {
+      // Validação específica para paciente
+      const requiredFields = ['codigo', 'nome_completo', 'cod_municipio'];
+      const missingFields = requiredFields.filter(field => !pacienteData[field] || pacienteData[field] === 'undefined');
+
+      if (missingFields.length > 0) {
+        throw new Error(`Campos obrigatórios faltando: ${missingFields.join(', ')}`);
+      }
+
+      // Tratamento especial para campos específicos
+      const sanitizedData = {
+        codigo: pacienteData.codigo,
+        cpf: pacienteData.cpf || null,
+        nome_completo: pacienteData.nome_completo,
+        genero: pacienteData.genero || null,
+        cod_municipio: pacienteData.cod_municipio,
+        bairro: pacienteData.bairro || null,
+        convenio: pacienteData.convenio || null,
+        cid: pacienteData.cid || null
+      };
+
+      const sql = SqlValidationService.buildInsertStatement('pacientes', sanitizedData);
+      await this.executeSql(sql, 'insertPaciente');
+
+    } catch (error) {
+      console.error('Erro ao inserir paciente:', error);
+      throw error;
+    }
+  }
+
   private deleteSqlFile(filePath: string): void {
     try {
       fs.unlinkSync(filePath);

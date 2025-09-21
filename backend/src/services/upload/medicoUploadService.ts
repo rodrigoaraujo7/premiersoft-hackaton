@@ -16,7 +16,6 @@ export class MedicoUploadService {
     }
 
     const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);
-    console.log('Se liga no JSON: ', jsonData);
 
     // Processar os dados dos médicos
     await this.regrasMedicos.processar(jsonData);

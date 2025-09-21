@@ -21,7 +21,7 @@ export class Paciente4json {
 
     // Generate unique filename (e.g., based on timestamp)
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const fileName = `patient-data-${timestamp}.json`;
+    const fileName = `paciente-data-${timestamp}.json`;
     const filePath = path.join(this.outputDir, fileName);
 
     try {

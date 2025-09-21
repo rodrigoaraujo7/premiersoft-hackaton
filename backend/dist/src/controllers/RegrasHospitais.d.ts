@@ -1,7 +1,7 @@
 export declare class RegrasHospitais {
     private migrateService;
     constructor();
-    processar(hospitaisData: any[]): Promise<void>;
+    processar(hospitaisData: any): Promise<void>;
     private isValidHospital;
     private sanitizeHospital;
     private sanitizeString;

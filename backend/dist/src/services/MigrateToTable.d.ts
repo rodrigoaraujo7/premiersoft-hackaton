@@ -11,6 +11,7 @@ export declare class MigrateToTable {
     private splitSqlStatements;
     insertHospital(hospitalData: any): Promise<void>;
     insertMedico(medicoData: any): Promise<void>;
+    insertPaciente(pacienteData: any): Promise<void>;
     private deleteSqlFile;
     migrate(): Promise<void>;
 }

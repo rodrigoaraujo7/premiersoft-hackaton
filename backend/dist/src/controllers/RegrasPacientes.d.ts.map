@@ -1,1 +1,1 @@
-{"version":3,"file":"RegrasPacientes.d.ts","sourceRoot":"","sources":["../../../src/controllers/RegrasPacientes.ts"],"names":[],"mappings":"AAEA,qBAAa,eAAe;IAE1B;;OAEG;IACU,SAAS,CAAC,IAAI,EAAE,OAAO,GAAG,OAAO,CAAC,MAAM,CAAC;CAKvD"}
+{"version":3,"file":"RegrasPacientes.d.ts","sourceRoot":"","sources":["../../../src/controllers/RegrasPacientes.ts"],"names":[],"mappings":"AAMA,qBAAa,eAAe;IAC1B,OAAO,CAAC,cAAc,CAAiB;;IAMjC,SAAS,CAAC,aAAa,EAAE,GAAG,GAAG,OAAO,CAAC,IAAI,CAAC;IAsFlD,OAAO,CAAC,eAAe;IAmBvB,OAAO,CAAC,gBAAgB;IAaxB,OAAO,CAAC,cAAc;IAQtB,OAAO,CAAC,cAAc;YASR,eAAe;CA0D9B"}

@@ -14,14 +14,32 @@ class RegrasMedicos {
     }
     async processar(medicosData) {
         try {
-            console.log(`Processando ${medicosData.length} médicos...`);
+            // Handle different data structures from various file formats
+            let dataArray;
+            if (Array.isArray(medicosData)) {
+                dataArray = medicosData;
+            }
+            else if (medicosData && typeof medicosData === 'object') {
+                // Handle XML structure: { Medicos: { Medico: [...] } }
+                if (medicosData.Medicos && Array.isArray(medicosData.Medicos.Medico)) {
+                    dataArray = medicosData.Medicos.Medico;
+                }
+                else {
+                    // Single object, wrap in array
+                    dataArray = [medicosData];
+                }
+            }
+            else {
+                throw new Error('Invalid data format: expected array or object with medico data');
+            }
+            console.log(`Processando ${dataArray.length} médicos...`);
             // Conectar ao banco de dados
             await this.migrateService.connect();
             console.log('Conectado ao banco de dados para processamento de médicos');
             let processedCount = 0;
             let errorCount = 0;
             const errors = [];
-            for (const [index, medico] of medicosData.entries()) {
+            for (const [index, medico] of dataArray.entries()) {
                 try {
                     // Validação de dados
                     if (!this.isValidMedico(medico)) {
@@ -34,7 +52,7 @@ class RegrasMedicos {
                     // Usar o método de inserção segura
                     await this.migrateService.insertMedico(sanitizedMedico);
                     processedCount++;
-                    console.log(`Médico ${index + 1}/${medicosData.length} processado: ${sanitizedMedico.nome_completo}`);
+                    console.log(`Médico ${index + 1}/${dataArray.length} processado: ${sanitizedMedico.nome_completo}`);
                 }
                 catch (error) {
                     errorCount++;

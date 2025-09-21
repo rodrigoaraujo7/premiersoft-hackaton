@@ -1,7 +1,7 @@
 export declare class RegrasMedicos {
     private migrateService;
     constructor();
-    processar(medicosData: any[]): Promise<void>;
+    processar(medicosData: any): Promise<void>;
     private isValidMedico;
     private sanitizeMedico;
     private sanitizeString;

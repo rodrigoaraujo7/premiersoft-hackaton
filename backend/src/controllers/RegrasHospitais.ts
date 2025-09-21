@@ -12,9 +12,26 @@ export class RegrasHospitais {
     this.migrateService = new MigrateToTable();
   }
 
-  async processar(hospitaisData: any[]): Promise<void> {
+  async processar(hospitaisData: any): Promise<void> {
     try {
-      console.log(`Processando ${hospitaisData.length} hospitais...`);
+      // Handle different data structures from various file formats
+      let dataArray: any[];
+
+      if (Array.isArray(hospitaisData)) {
+        dataArray = hospitaisData;
+      } else if (hospitaisData && typeof hospitaisData === 'object') {
+        // Handle XML structure: { Hospitais: { Hospital: [...] } }
+        if (hospitaisData.Hospitais && Array.isArray(hospitaisData.Hospitais.Hospital)) {
+          dataArray = hospitaisData.Hospitais.Hospital;
+        } else {
+          // Single object, wrap in array
+          dataArray = [hospitaisData];
+        }
+      } else {
+        throw new Error('Invalid data format: expected array or object with hospital data');
+      }
+
+      console.log(`Processando ${dataArray.length} hospitais...`);
 
       // Conectar ao banco de dados
       await this.migrateService.connect();
@@ -24,7 +41,7 @@ export class RegrasHospitais {
       let errorCount = 0;
       const errors: string[] = [];
 
-      for (const [index, hospital] of hospitaisData.entries()) {
+      for (const [index, hospital] of dataArray.entries()) {
         try {
           // Validação de dados
           if (!this.isValidHospital(hospital)) {
@@ -40,7 +57,7 @@ export class RegrasHospitais {
           await this.migrateService.insertHospital(sanitizedHospital);
           processedCount++;
 
-          console.log(`Hospital ${index + 1}/${hospitaisData.length} processado: ${sanitizedHospital.nome}`);
+          console.log(`Hospital ${index + 1}/${dataArray.length} processado: ${sanitizedHospital.nome}`);
 
         } catch (error) {
           errorCount++;

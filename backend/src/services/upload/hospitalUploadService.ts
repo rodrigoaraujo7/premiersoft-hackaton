@@ -16,7 +16,6 @@ export class HospitalUploadService {
     }
 
     const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);
-    console.log('Se liga no JSON: ', jsonData);
 
     // Processar os dados dos hospitais
     await this.regrasHospitais.processar(jsonData);

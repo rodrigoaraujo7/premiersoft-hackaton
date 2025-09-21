@@ -49,9 +49,9 @@ class PatientUploadService {
             throw new Error(`Formato de arquivo invalido, só são aceitos os formatos: ${this.allowedFormats.join(', ')}`);
         }
         const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);
-        const result = await this.regrasPacientes.processar(jsonData);
-        console.log('Se liga no JSON: ', jsonData);
-        return result;
+        // Processar os dados dos pacientes
+        await this.regrasPacientes.processar(jsonData);
+        return 'Upload e processamento de pacientes concluído com sucesso';
     }
 }
 exports.PatientUploadService = PatientUploadService;
