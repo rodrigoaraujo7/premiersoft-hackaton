@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 
 import { tv } from "tailwind-variants";
 
@@ -64,11 +65,89 @@ const RootLayout = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadStatus, setUploadStatus] = useState<string>("");
+
+  // Configuração de tamanho máximo do arquivo
+  const MAX_FILE_SIZE = 1024 * 1024 * 1024 * 5; // 5GB
 
   const handleCloseDialog = () => {
     setIsUploading(false);
     setSelectedFile(null);
     setSelectedCategory("");
+    setUploadProgress(0);
+    setUploadStatus("");
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      alert("Arquivo muito grande. O tamanho máximo permitido é 5GB.");
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const uploadFile = async (file: File, category: string) => {
+    setUploadStatus("Iniciando upload...");
+    setUploadProgress(10);
+
+    try {
+      // Mapear categoria para endpoint correto
+      const categoryEndpoints: { [key: string]: string } = {
+        medico: "medicos",
+        paciente: "pacientes",
+        hospital: "hospitais",
+        estado: "estados",
+        municipio: "municipios",
+        cid: "cid",
+      };
+
+      const endpoint = categoryEndpoints[category];
+      if (!endpoint) {
+        throw new Error(`Categoria não suportada: ${category}`);
+      }
+
+      setUploadStatus("Enviando arquivo...");
+      setUploadProgress(50);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`http://localhost:3000/upload/${endpoint}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      setUploadProgress(90);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Falha no upload");
+      }
+
+      const result = await response.json();
+      setUploadProgress(100);
+      setUploadStatus("Upload concluído com sucesso!");
+
+      console.log("Upload resultado:", result);
+      handleCloseDialog();
+    } catch (error) {
+      console.error("Erro no upload:", error);
+      setUploadStatus(
+        `Erro no upload: ${error instanceof Error ? error.message : "Erro desconhecido"}`
+      );
+      setUploadProgress(0);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !selectedCategory) return;
+
+    setUploadProgress(0);
+    await uploadFile(selectedFile, selectedCategory);
   };
 
   return (
@@ -91,11 +170,11 @@ const RootLayout = () => {
             </Button>
           </DialogTrigger>
 
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Enviar Dados</DialogTitle>
               <DialogDescription>
-                Selecione o arquivo que deseja enviar para análise.
+                Selecione o arquivo que deseja enviar para análise (até 5GB).
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4">
@@ -105,7 +184,7 @@ const RootLayout = () => {
                   accept=".csv,.json,.xml,.hl7,.fhir"
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   id="file-upload"
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  onChange={handleFileChange}
                 />
                 <label
                   htmlFor="file-upload"
@@ -118,7 +197,7 @@ const RootLayout = () => {
                           ✓ {selectedFile.name}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          Clique ou arraste o arquivo para trocar
+                          {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                         </p>
                       </div>
                     ) : (
@@ -131,7 +210,7 @@ const RootLayout = () => {
                           ou arraste o arquivo aqui
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          CSV, JSON, XML, HL7, FHIR
+                          CSV, JSON, XML, HL7, FHIR (até 5GB)
                         </p>
                       </div>
                     )}
@@ -139,6 +218,7 @@ const RootLayout = () => {
                 </label>
               </div>
 
+              {/* Category selection */}
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
@@ -156,16 +236,27 @@ const RootLayout = () => {
                 </SelectContent>
               </Select>
 
+              {/* Progress indicator */}
+              {uploadProgress > 0 && (
+                <div className="space-y-2">
+                  <Progress value={uploadProgress} className="w-full" />
+                  <p className="text-sm text-gray-600">{uploadStatus}</p>
+                </div>
+              )}
+
+              {/* Action buttons */}
               <div className="flex justify-end">
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={handleCloseDialog}>
                     Cancelar
                   </Button>
                   <Button
-                    onClick={handleCloseDialog}
-                    disabled={!selectedFile || !selectedCategory}
+                    onClick={handleUpload}
+                    disabled={
+                      !selectedFile || !selectedCategory || uploadProgress > 0
+                    }
                   >
-                    Enviar
+                    {uploadProgress > 0 ? "Enviando..." : "Enviar"}
                   </Button>
                 </div>
               </div>
