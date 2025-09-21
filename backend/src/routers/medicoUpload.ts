@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { MedicoUploadService } from '../services/medicoUploadService';
+import { MedicoUploadService } from '../services/upload/medicoUploadService';
 
 export async function medicoUploadRoutes(fastify: FastifyInstance) {
   const medicoUploadService = new MedicoUploadService();

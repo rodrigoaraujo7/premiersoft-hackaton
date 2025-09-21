@@ -3,6 +3,7 @@ import { aiService } from './AI/ai';
 import { servicesRoutes } from './routers/services';
 import { patientUploadRoutes } from './routers/pacienteUpload';
 import { medicoUploadRoutes } from './routers/medicoUpload';
+import { hospitalUploadRoutes } from './routers/hospitalUpload';
 import multipart from '@fastify/multipart';
 
 // Type definitions
@@ -40,6 +41,7 @@ const start = async (): Promise<void> => {
     await app.register(multipart);
     await app.register(patientUploadRoutes);
     await app.register(medicoUploadRoutes);
+    await app.register(hospitalUploadRoutes);
 
     await app.listen({ port: 3000, host: '0.0.0.0' });
     console.log('Server is running on port 3000');

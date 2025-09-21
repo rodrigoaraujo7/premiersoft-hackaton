@@ -1,12 +1,12 @@
 import * as path from 'path';
-import { DataConverter } from './dataConverter';
-import { RegrasPacientes } from '../controllers/RegrasPacientes';
+import { DataConverter } from '../dataConverter';
+import { RegrasHospitais } from '../../controllers/RegrasHospitais';
 import { MultipartFile } from '@fastify/multipart';
 
-export class PatientUploadService {
+export class HospitalUploadService {
   private allowedFormats = ['.xlsx', '.xml', '.json', '.hl7', '.fhir', '.csv'];
   private dataConverter = new DataConverter();
-  private regrasPacientes = new RegrasPacientes();
+  private regrasHospitais = new RegrasHospitais();
 
   public async upload(data: MultipartFile): Promise<string> {
     const fileExtension = path.extname(data.filename).toLowerCase();
@@ -16,7 +16,7 @@ export class PatientUploadService {
     }
 
     const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);
-    const result = await this.regrasPacientes.processar(jsonData);
+    const result = await this.regrasHospitais.processar(jsonData);
     console.log('Se liga no JSON: ', jsonData);
 
     return result;

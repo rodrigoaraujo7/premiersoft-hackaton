@@ -1,9 +1,9 @@
 import * as path from 'path';
-import { DataConverter } from './dataConverter';
-import { RegrasPacientes } from '../controllers/RegrasPacientes';
+import { DataConverter } from '../dataConverter';
+import { RegrasPacientes } from '../../controllers/RegrasPacientes';
 import { MultipartFile } from '@fastify/multipart';
 
-export class MedicoUploadService {
+export class PatientUploadService {
   private allowedFormats = ['.xlsx', '.xml', '.json', '.hl7', '.fhir', '.csv'];
   private dataConverter = new DataConverter();
   private regrasPacientes = new RegrasPacientes();
