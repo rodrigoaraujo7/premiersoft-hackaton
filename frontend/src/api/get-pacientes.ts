@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Paciente } from "@/types/paciente";
+import { API_BASE_URL } from "@/config/api";
 
 export async function fetchPacientes(): Promise<{ data: Paciente[] }> {
-  const response = await fetch("http://localhost:3000/pacientes");
+  const response = await fetch(`${API_BASE_URL}/pacientes`);
 
   if (!response.ok) {
     throw new Error(`Erro ao buscar pacientes: ${response.status}`);
