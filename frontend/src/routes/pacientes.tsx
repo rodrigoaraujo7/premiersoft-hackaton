@@ -9,31 +9,20 @@ import type { ChartConfig } from "@/components/ui/chart";
 
 import type { Paciente } from "@/types/paciente";
 
+import { usePacientes } from "@/api/get-pacientes";
+
 export const Route = createFileRoute("/pacientes")({
   component: RouteComponent,
 });
 
-const defaultData: Paciente[] = [
-  {
-    codigo: "1",
-    nome_completo: "João da Silva",
-    genero: "Masculino",
-    cod_municipio: "1",
-    bairro: "Bairro X",
-    convenio: "Convênio X",
-    cid: "Cid X",
-    cpf: "12345678901",
-  },
-];
-
 const columns: ColumnDef<Paciente>[] = [
-  {
-    accessorKey: "codigo",
-    header: "Código",
-  },
   {
     accessorKey: "nome_completo",
     header: "Nome",
+  },
+  {
+    accessorKey: "cpf",
+    header: "CPF",
   },
   {
     accessorKey: "genero",
@@ -44,20 +33,12 @@ const columns: ColumnDef<Paciente>[] = [
     header: "Bairro",
   },
   {
-    accessorKey: "cod_municipio",
-    header: "Código do Município",
-  },
-  {
     accessorKey: "convenio",
     header: "Convênio",
   },
   {
     accessorKey: "cid",
     header: "CID",
-  },
-  {
-    accessorKey: "cpf",
-    header: "CPF",
   },
 ];
 
@@ -96,7 +77,30 @@ const pieChartConfig = {
 } satisfies ChartConfig;
 
 function RouteComponent() {
-  const data = defaultData;
+  const { data: pacientes, isLoading, error } = usePacientes();
+
+  if (isLoading) {
+    return (
+      <section className="container mx-auto py-10">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-lg">Carregando médicos...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto py-10">
+        <Alert variant="destructive">
+          <AlertTitle>Erro!</AlertTitle>
+          <AlertDescription>
+            Erro ao carregar os dados dos médicos: {error.message}
+          </AlertDescription>
+        </Alert>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto py-10">
@@ -118,7 +122,7 @@ function RouteComponent() {
 
       <br />
 
-      <DataTable data={data} columns={columns} />
+      <DataTable data={pacientes?.data || []} columns={columns} />
     </section>
   );
 }
