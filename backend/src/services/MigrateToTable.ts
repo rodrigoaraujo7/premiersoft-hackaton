@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Client } from 'pg';
 import * as dotenv from 'dotenv';
+import { SqlValidationService } from './SqlValidationService';
+import { SqlDebugHelper } from '../utils/SqlDebugHelper';
 
 // Load environment variables
 dotenv.config();
@@ -66,25 +68,33 @@ export class MigrateToTable {
     }
   }
 
-  private async executeSql(sql: string, fileName: string): Promise<void> {
+  private async executeSql(sql: string, fileName: string = 'unknown'): Promise<void> {
     try {
-      console.log(`Executing SQL from ${fileName}...`);
+      // Validar SQL antes de executar
+      const validation = SqlValidationService.validateSql(sql);
 
-      // Split SQL into individual statements
-      // First, remove comments and normalize line breaks
-      const cleanSql = sql
-        .replace(/--.*$/gm, '') // Remove single-line comments
-        .replace(/\s+/g, ' ') // Normalize whitespace
-        .trim();
+      if (!validation.isValid) {
+        console.error('Erros de validação SQL:', validation.errors);
+        console.error('SQL problemático:', sql);
+        SqlDebugHelper.analyzeSql(sql);
+        throw new Error(`SQL inválido: ${validation.errors.join(', ')}`);
+      }
 
-      const statements = cleanSql
-        .split(';')
-        .map(stmt => stmt.trim())
-        .filter(stmt => stmt.length > 0);
+      console.log(`Executando SQL válido de ${fileName}:`, sql);
+
+      // Handle different types of SQL content
+      let statements: string[];
+
+      // If it's a single INSERT statement, execute as one
+      if (sql.trim().toUpperCase().startsWith('INSERT') && sql.split(';').length === 2) {
+        statements = [sql.trim()];
+      } else {
+        // For complex SQL with multiple statements, we need to be careful with semicolons in strings
+        // Use a more sophisticated approach to split SQL statements
+        statements = this.splitSqlStatements(sql);
+      }
 
       console.log(`Found ${statements.length} SQL statements to execute`);
-      console.log('Clean SQL:', cleanSql.substring(0, 200) + '...');
-      console.log('Statements:', statements);
 
       for (const statement of statements) {
         if (statement.trim()) {
@@ -97,6 +107,76 @@ export class MigrateToTable {
     } catch (error) {
       console.error(`Error executing SQL from ${fileName}:`, error);
       console.error('SQL that failed:', sql);
+      throw error;
+    }
+  }
+
+  private splitSqlStatements(sql: string): string[] {
+    const statements: string[] = [];
+    let currentStatement = '';
+    let inString = false;
+    let stringChar = '';
+
+    for (let i = 0; i < sql.length; i++) {
+      const char = sql[i];
+      const prevChar = i > 0 ? sql[i - 1] : '';
+
+      // Handle string delimiters
+      if ((char === '"' || char === "'") && prevChar !== '\\') {
+        if (!inString) {
+          inString = true;
+          stringChar = char;
+        } else if (char === stringChar) {
+          inString = false;
+          stringChar = '';
+        }
+      }
+
+      // If we encounter a semicolon outside of a string, it's a statement separator
+      if (char === ';' && !inString) {
+        if (currentStatement.trim()) {
+          statements.push(currentStatement.trim());
+        }
+        currentStatement = '';
+      } else {
+        currentStatement += char;
+      }
+    }
+
+    // Add the last statement if there's content
+    if (currentStatement.trim()) {
+      statements.push(currentStatement.trim());
+    }
+
+    return statements.filter(stmt => stmt.length > 0);
+  }
+
+  // Método para inserção segura
+  async insertHospital(hospitalData: any): Promise<void> {
+    try {
+      // Validação específica para hospital
+      const requiredFields = ['codigo', 'nome', 'cod_municipio', 'bairro'];
+      const missingFields = requiredFields.filter(field => !hospitalData[field] || hospitalData[field] === 'undefined');
+
+      if (missingFields.length > 0) {
+        throw new Error(`Campos obrigatórios faltando: ${missingFields.join(', ')}`);
+      }
+
+      // Tratamento especial para campos específicos
+      const sanitizedData = {
+        codigo: hospitalData.codigo,
+        nome: hospitalData.nome,
+        cod_municipio: hospitalData.cod_municipio,
+        bairro: hospitalData.bairro,
+        especialidades: hospitalData.especialidades || null,
+        leitos: hospitalData.leitos && !isNaN(hospitalData.leitos) ? Number(hospitalData.leitos) : null
+      };
+
+      const sql = SqlValidationService.buildInsertStatement('hospitais', sanitizedData);
+      await this.executeSql(sql, 'insertHospital');
+
+    } catch (error) {
+      console.error('Erro ao inserir hospital:', error);
       throw error;
     }
   }

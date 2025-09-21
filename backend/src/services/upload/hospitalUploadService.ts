@@ -16,9 +16,11 @@ export class HospitalUploadService {
     }
 
     const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);
-    const result = await this.regrasHospitais.processar(jsonData);
     console.log('Se liga no JSON: ', jsonData);
 
-    return result;
+    // Processar os dados dos hospitais
+    await this.regrasHospitais.processar(jsonData);
+
+    return 'Upload e processamento de hospitais concluído com sucesso';
   }
 }

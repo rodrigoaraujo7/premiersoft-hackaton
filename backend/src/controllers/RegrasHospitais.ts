@@ -2,58 +2,126 @@ import { Hospital4json } from '../utils/hospital4json';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { MigrateToTable } from '../services/MigrateToTable';
+import { SqlValidationService } from '../services/SqlValidationService';
+import { SqlDebugHelper } from '../utils/SqlDebugHelper';
 
 export class RegrasHospitais {
-  
-  /**
-   * Processes patient data by validating it and writing it to a JSON file.
-   */
-  public async processar(data: unknown): Promise<string> {
-    const hospital4json = new Hospital4json();
-    const hospitalJsonPath = await hospital4json.processaHospital4Json(data);
+  private migrateService: MigrateToTable;
 
-    // Read the JSON file
-    const jsonData = await fs.readFile(hospitalJsonPath, 'utf-8');
-    const hospitals = JSON.parse(jsonData);
+  constructor() {
+    this.migrateService = new MigrateToTable();
+  }
 
-    // Generate SQL
-    let sql = `-- Criação da tabela hospitais
-    CREATE TABLE IF NOT EXISTS hospitais (
-      codigo UUID PRIMARY KEY,
-      nome TEXT,
-      cod_municipio UUID,
-      bairro TEXT,
-      especialidades TEXT,
-      leitos INT,
-      FOREIGN KEY (cod_municipio) REFERENCES municipios(codigo_ibge)
-    );`;
+  async processar(hospitaisData: any[]): Promise<void> {
+    try {
+      console.log(`Processando ${hospitaisData.length} hospitais...`);
 
-    // Assuming hospitals is an array of objects
-    if (Array.isArray(hospitals)) {
-      for (const hospital of hospitals) {
-        const values = [
-          `'${hospital.codigo}'`,
-          `'${hospital.nome}'`,
-          `'${hospital.cod_municipio || hospital.cidade}'`,
-          `'${hospital.bairro}'`,
-          `'${hospital.especialidades || hospital.especialidade}'`,
-          hospital.leitos || hospital.leitos_totais
-        ];
-        sql += `INSERT INTO hospitais (codigo, nome, cod_municipio, bairro, especialidades, leitos) VALUES (${values.join(', ')}) ON CONFLICT (codigo) DO NOTHING;\n`;
+      // Conectar ao banco de dados
+      await this.migrateService.connect();
+      console.log('Conectado ao banco de dados para processamento de hospitais');
+
+      let processedCount = 0;
+      let errorCount = 0;
+      const errors: string[] = [];
+
+      for (const [index, hospital] of hospitaisData.entries()) {
+        try {
+          // Validação de dados
+          if (!this.isValidHospital(hospital)) {
+            console.warn(`Hospital ${index + 1} ignorado: dados inválidos`, hospital);
+            errorCount++;
+            continue;
+          }
+
+          // Sanitização
+          const sanitizedHospital = this.sanitizeHospital(hospital);
+
+          // Usar o método de inserção segura
+          await this.migrateService.insertHospital(sanitizedHospital);
+          processedCount++;
+
+          console.log(`Hospital ${index + 1}/${hospitaisData.length} processado: ${sanitizedHospital.nome}`);
+
+        } catch (error) {
+          errorCount++;
+          const errorMsg = `Erro no hospital ${index + 1}: ${error instanceof Error ? error.message : String(error)}`;
+          console.error(errorMsg, hospital);
+          errors.push(errorMsg);
+
+          // Debug do SQL problemático
+          console.log('--- DEBUG DO ERRO ---');
+          SqlDebugHelper.testInsert('hospitais', hospital);
+        }
+      }
+
+      console.log(`Processamento concluído: ${processedCount} sucessos, ${errorCount} erros`);
+
+      if (errors.length > 0) {
+        console.error('Resumo dos erros:', errors);
+      }
+
+    } catch (error) {
+      console.error('Erro geral no processamento:', error);
+      throw error;
+    } finally {
+      // Sempre desconectar do banco de dados
+      try {
+        await this.migrateService.disconnect();
+        console.log('Desconectado do banco de dados');
+      } catch (disconnectError) {
+        console.error('Erro ao desconectar do banco:', disconnectError);
       }
     }
+  }
 
-    // Write SQL to file
-    const sqlDir = path.join(__dirname, '..', 'resources', 'sql');
-    await fs.mkdir(sqlDir, { recursive: true });
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const sqlFilePath = path.join(sqlDir, `hospital-data-${timestamp}.sql`);
-    await fs.writeFile(sqlFilePath, sql, 'utf-8');
+  private isValidHospital(hospital: any): boolean {
+    // Validações obrigatórias
+    if (!hospital.codigo || hospital.codigo === 'undefined' || hospital.codigo === '') {
+      return false;
+    }
 
-    // Execute SQL
-    const migrator = new MigrateToTable();
-    await migrator.migrate();
+    if (!hospital.nome || hospital.nome === 'undefined') {
+      return false;
+    }
 
-    return hospitalJsonPath;
+    // Verificar cod_municipio ou cidade
+    if ((!hospital.cod_municipio && !hospital.cidade) ||
+        (hospital.cod_municipio === 'undefined' && hospital.cidade === 'undefined')) {
+      return false;
+    }
+
+    if (!hospital.bairro || hospital.bairro === 'undefined') {
+      return false;
+    }
+
+    return true;
+  }
+
+  private sanitizeHospital(hospital: any): any {
+    return {
+      codigo: this.sanitizeString(hospital.codigo),
+      nome: this.sanitizeString(hospital.nome),
+      cod_municipio: this.sanitizeString(hospital.cod_municipio || hospital.cidade),
+      bairro: this.sanitizeString(hospital.bairro),
+      especialidades: this.sanitizeString(hospital.especialidades || hospital.especialidade) || null,
+      leitos: this.sanitizeNumber(hospital.leitos || hospital.leitos_totais)
+    };
+  }
+
+  private sanitizeString(value: any): string | null {
+    if (!value || value === 'undefined' || value === 'null') {
+      return null;
+    }
+
+    return String(value).trim();
+  }
+
+  private sanitizeNumber(value: any): number | null {
+    if (!value || value === 'undefined' || value === 'null' || value === '') {
+      return null;
+    }
+
+    const num = Number(value);
+    return isNaN(num) ? null : num;
   }
 }
