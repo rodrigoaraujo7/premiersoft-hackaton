@@ -5,7 +5,9 @@ export interface AIConfig {
 export interface Message {
     role: 'user' | 'model';
     parts: Array<{
-        text: string;
+        text?: string;
+        executableCode?: any;
+        codeExecutionResult?: any;
     }>;
 }
 export interface ToolCall {
@@ -29,6 +31,12 @@ export interface AIOptions {
     temperature?: number;
     topP?: number;
     stream?: boolean;
+    thinkingConfig?: {
+        thinkingBudget: number;
+    };
+    systemInstruction?: Array<{
+        text: string;
+    }>;
     [key: string]: any;
 }
 export interface AIResponse {
@@ -47,6 +55,10 @@ export declare class AIService {
     private ai;
     constructor(config?: AIConfig);
     /**
+     * Get default tools configuration for Google GenAI
+     */
+    private getDefaultTools;
+    /**
      * Convert tools to Google GenAI function calling format
      */
     private convertToolsToGoogleGenAI;
@@ -54,6 +66,10 @@ export declare class AIService {
      * Send a message to the AI with streaming and tool calling support
      */
     sendMessage(message: string, conversationHistory?: Message[], tools?: Tool[], options?: AIOptions): Promise<AIResponse>;
+    /**
+     * Generate content with the new Google GenAI configuration structure
+     */
+    generateContent(input: string, systemInstruction?: string, options?: AIOptions): Promise<AIResponse>;
     /**
      * Execute a Google GenAI function call
      */
@@ -64,4 +80,9 @@ export declare class AIService {
     private executeToolCall;
 }
 export declare const aiService: AIService;
+/**
+ * Main function that demonstrates the new Google GenAI configuration
+ * This matches the structure from the provided code example
+ */
+export declare function main(): Promise<void>;
 //# sourceMappingURL=ai.d.ts.map
