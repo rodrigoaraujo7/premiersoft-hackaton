@@ -11,3 +11,5 @@ CREATE TABLE if NOT EXISTS municipios (
   fuso_horario TEXT,
   populacao TEXT
 );
+
+
