@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/server.ts",
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node src/server.ts",
     "cli": "ts-node src/cli.ts",
     "examples": "ts-node src/example-usage.ts",
     "test": "jest"

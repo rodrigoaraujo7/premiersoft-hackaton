@@ -284,6 +284,39 @@ export class MigrateToTable {
     }
   }
 
+  // Método para obter todos os CID
+  async getAllCID(): Promise<any[]> {
+    try {
+      const result = await this.executeQuery('SELECT * FROM CID_10');
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao obter CID:', error);
+      throw error;
+    }
+  }
+
+  // Método para obter todos os estados
+  async getAllEstados(): Promise<any[]> {
+    try {
+      const result = await this.executeQuery('SELECT * FROM estados');
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao obter estados:', error);
+      throw error;
+    }
+  }
+
+  // Método para obter todos os municipios
+  async getAllMunicipios(): Promise<any[]> {
+    try {
+      const result = await this.executeQuery('SELECT * FROM municipios');
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao obter municipios:', error);
+      throw error;
+    }
+  }
+
   private deleteSqlFile(filePath: string): void {
     try {
       fs.unlinkSync(filePath);

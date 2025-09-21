@@ -8,6 +8,9 @@ import { servicesRoutes } from "./routers/services";
 import { patientUploadRoutes } from "./routers/pacienteUpload";
 import { medicoUploadRoutes } from "./routers/medicoUpload";
 import { hospitalUploadRoutes } from "./routers/hospitalUpload";
+import { cidRoutes } from "./routers/cid";
+import { estadosRoutes } from "./routers/estados";
+import { municipiosRoutes } from "./routers/municipios";
 import multipart from "@fastify/multipart";
 // @ts-ignore
 import cors from "@fastify/cors";
@@ -62,6 +65,9 @@ const start = async (): Promise<void> => {
     await app.register(patientUploadRoutes);
     await app.register(medicoUploadRoutes);
     await app.register(hospitalUploadRoutes);
+    await app.register(cidRoutes);
+    await app.register(estadosRoutes);
+    await app.register(municipiosRoutes);
 
     await app.listen({ port: 3000, host: "0.0.0.0" });
     console.log("Server is running on port 3000");
