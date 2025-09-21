@@ -1,0 +1,1 @@
+{"version":3,"file":"RegrasPacientes.js","sourceRoot":"","sources":["../../../src/controllers/RegrasPacientes.ts"],"names":[],"mappings":";;;AAAA,0DAAuD;AAEvD,MAAa,eAAe;IAE1B;;OAEG;IACI,KAAK,CAAC,SAAS,CAAC,IAAa;QAClC,MAAM,aAAa,GAAG,IAAI,6BAAa,EAAE,CAAC;QAC1C,IAAI,gBAAgB,GAAG,MAAM,aAAa,CAAC,qBAAqB,CAAC,IAAI,CAAC,CAAC;QACvE,OAAO,gBAAgB,CAAC;IAC1B,CAAC;CACF;AAVD,0CAUC"}

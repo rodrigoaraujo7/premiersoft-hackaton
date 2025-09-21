@@ -191,6 +191,34 @@ export class MigrateToTable {
     }
   }
 
+  // Método para inserção segura de médicos
+  async insertMedico(medicoData: any): Promise<void> {
+    try {
+      // Validação específica para médico
+      const requiredFields = ['codigo', 'nome_completo', 'cod_municipio'];
+      const missingFields = requiredFields.filter(field => !medicoData[field] || medicoData[field] === 'undefined');
+
+      if (missingFields.length > 0) {
+        throw new Error(`Campos obrigatórios faltando: ${missingFields.join(', ')}`);
+      }
+
+      // Tratamento especial para campos específicos
+      const sanitizedData = {
+        codigo: medicoData.codigo,
+        nome_completo: medicoData.nome_completo,
+        especialidade_medico: medicoData.especialidade_medico || medicoData.especialidade || null,
+        cod_municipio: medicoData.cod_municipio
+      };
+
+      const sql = SqlValidationService.buildInsertStatement('medicos', sanitizedData);
+      await this.executeSql(sql, 'insertMedico');
+
+    } catch (error) {
+      console.error('Erro ao inserir médico:', error);
+      throw error;
+    }
+  }
+
   private deleteSqlFile(filePath: string): void {
     try {
       fs.unlinkSync(filePath);

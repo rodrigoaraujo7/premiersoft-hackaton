@@ -1,0 +1,1 @@
+{"version":3,"file":"RegrasHospitais.d.ts","sourceRoot":"","sources":["../../../src/controllers/RegrasHospitais.ts"],"names":[],"mappings":"AAOA,qBAAa,eAAe;IAC1B,OAAO,CAAC,cAAc,CAAiB;;IAMjC,SAAS,CAAC,aAAa,EAAE,GAAG,EAAE,GAAG,OAAO,CAAC,IAAI,CAAC;IAqEpD,OAAO,CAAC,eAAe;IAuBvB,OAAO,CAAC,gBAAgB;IAWxB,OAAO,CAAC,cAAc;IAQtB,OAAO,CAAC,cAAc;YASR,eAAe;CA0D9B"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"dataConverter.d.ts","sourceRoot":"","sources":["../../../src/services/dataConverter.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,QAAQ,CAAC;AAIlC,qBAAa,aAAa;IACX,aAAa,CAAC,MAAM,EAAE,QAAQ,EAAE,aAAa,EAAE,MAAM,GAAG,OAAO,CAAC,GAAG,CAAC;IAoBjF,OAAO,CAAC,cAAc;IAStB,OAAO,CAAC,sBAAsB;IAqB9B,OAAO,CAAC,gBAAgB;IAKxB,OAAO,CAAC,gBAAgB;CAezB"}

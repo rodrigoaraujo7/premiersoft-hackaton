@@ -16,9 +16,11 @@ export class MedicoUploadService {
     }
 
     const jsonData = await this.dataConverter.convertToJSON(data.file, fileExtension);
-    const result = await this.regrasMedicos.processar(jsonData);
     console.log('Se liga no JSON: ', jsonData);
 
-    return result;
+    // Processar os dados dos médicos
+    await this.regrasMedicos.processar(jsonData);
+
+    return 'Upload e processamento de médicos concluído com sucesso';
   }
 }
