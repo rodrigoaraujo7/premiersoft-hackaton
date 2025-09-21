@@ -12,4 +12,9 @@ CREATE TABLE if NOT EXISTS municipios (
   populacao TEXT
 );
 
+COPY municipios FROM '/var/lib/postgresql/data/import/municipios.csv' DELIMITER ',' CSV HEADER;
+
+
+
+
 
