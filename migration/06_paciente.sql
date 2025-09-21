@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS pacientes (
   cpf TEXT,
   nome_completo TEXT,
   genero TEXT,
-  cod_municipio UUID,
+  cod_municipio TEXT,
   bairro TEXT,
   convenio TEXT,
-  cid UUID
+  cid TEXT
 );
