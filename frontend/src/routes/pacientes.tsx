@@ -99,12 +99,11 @@ function RouteComponent() {
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Colocar um select de estado para filtrar as cidades */}
-      {/* TODO: PIZZA -> mostrar distribuição de hospitais por cidade */}
+      {/* TODO: PIZZA -> mostrar distribuição por convenio */}
       <PieChart
         chartConfig={pieChartConfig}
         chartData={pieChartData}
-        label="Distribuição de hospitais por cidade"
+        label="Distribuição de pacientes por convenio"
       />
 
       <br />

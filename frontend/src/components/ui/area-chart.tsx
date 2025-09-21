@@ -27,34 +27,44 @@ type AreaChartProps<T> = {
   chartData: T[];
   label: string;
   description?: string;
+  select?: boolean;
+  selectOptions?: {
+    value: string;
+    label: string;
+  }[];
 };
 
 export function AreaChart<T>({
   chartConfig,
   chartData,
   label,
+  select,
+  selectOptions,
 }: AreaChartProps<T>) {
   return (
     <Card className="pt-0">
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
         <div className="grid flex-1 gap-1">
           <CardTitle>{label}</CardTitle>
         </div>
-        {/* TODO: talvez colocar esse select através de props */}
-        <Select defaultValue="teste">
-          <SelectTrigger
-            className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
-            aria-label="Selecione um estado"
-          >
-            <SelectValue placeholder="Selecione um estado" />
-          </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            {/* TODO: Listar todos os estados e aplicar o filtro */}
-            <SelectItem value="teste" className="rounded-lg">
-              Teste
-            </SelectItem>
-          </SelectContent>
-        </Select>
+
+        {select && (
+          <Select defaultValue={selectOptions?.[0].value}>
+            <SelectTrigger
+              className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
+              aria-label="Selecione um estado"
+            >
+              <SelectValue placeholder="Selecione um estado" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              {selectOptions?.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer

@@ -1,10 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import { PatientUploadService } from '../services/patientUploadService';
+import { PatientUploadService } from '../services/pacienteUploadService';
 
 export async function patientUploadRoutes(fastify: FastifyInstance) {
   const patientUploadService = new PatientUploadService();
 
-  fastify.post('/upload/patients', async (req, reply) => {
+  fastify.post('/upload/pacientes', async (req, reply) => {
     const data = await req.file();
 
     if (!data) {

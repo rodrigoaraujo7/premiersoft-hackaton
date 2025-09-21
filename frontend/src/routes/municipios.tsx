@@ -178,16 +178,23 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const selectOptions = [
+  { value: "sc", label: "Santa Catarina" },
+  { value: "sp", label: "São Paulo" },
+];
+
 function RouteComponent() {
   const data = defaultData;
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Mostrar quantidade de pacientes e hospitais por muni */}
+      {/* TODO: Mostrar quantidade de pacientes e hospitais por municipio */}
       <AreaChart
         chartConfig={chartConfig}
         chartData={chartData}
         label="Quantidade de pacientes e hospitais por municipio"
+        select
+        selectOptions={selectOptions}
       />
 
       <br />

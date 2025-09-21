@@ -28,8 +28,8 @@ export const BarChart = <T,>({
 }: BarChartProps<T>) => {
   return (
     <Card>
-      <CardHeader className="items-center pb-0">
-        <CardTitle>{label}</CardTitle>
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
+        <CardTitle className="grid flex-1 gap-1">{label}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
@@ -45,7 +45,7 @@ export const BarChart = <T,>({
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
             <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" />
+            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
           </RechartBarChart>
         </ChartContainer>
       </CardContent>

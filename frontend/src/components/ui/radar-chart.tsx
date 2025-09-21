@@ -12,22 +12,56 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type RadarChartProps<T> = {
   chartConfig: ChartConfig;
   chartData: T[];
   label: string;
+  select?: boolean;
+  selectOptions?: {
+    value: string;
+    label: string;
+  }[];
 };
 
 export function RadarChart<T>({
   chartConfig,
   chartData,
   label,
+  select,
+  selectOptions,
 }: RadarChartProps<T>) {
   return (
     <Card>
-      <CardHeader className="items-center">
-        <CardTitle>{label}</CardTitle>
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
+        <div className="grid flex-1 gap-1">
+          <CardTitle>{label}</CardTitle>
+        </div>
+
+        {select && (
+          <Select defaultValue={selectOptions?.[0].value}>
+            <SelectTrigger
+              className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
+              aria-label="Selecione um estado"
+            >
+              <SelectValue placeholder="Selecione um estado" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              {selectOptions?.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </CardHeader>
       <CardContent className="pb-0">
         <ChartContainer
