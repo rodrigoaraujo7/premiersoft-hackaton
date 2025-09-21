@@ -3,7 +3,7 @@ import type { Medico } from "@/types/medicos";
 import { API_BASE_URL } from "@/config/api";
 
 export async function fetchMedicos(): Promise<{ data: Medico[] }> {
-  const response = await fetch(`${API_BASE_URL}/medicos`);
+  const response = await fetch(`${API_BASE_URL}/`);
 
   if (!response.ok) {
     throw new Error(`Erro ao buscar médicos: ${response.status}`);

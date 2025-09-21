@@ -22,8 +22,6 @@ export async function medicoUploadRoutes(fastify: FastifyInstance) {
 
   fastify.get("/medicos", async (req, reply) => {
     try {
-      return reply.send({ ok: true });
-
       const regras = new RegrasMedicos();
       const data = await regras.getAll();
       return reply.send({ data });
