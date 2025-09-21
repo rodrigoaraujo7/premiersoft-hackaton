@@ -1,4 +1,3 @@
--- Improved compatibility of Voltar pro topo link -->
 <a id="readme-top"></a>
 
 <!-- PROJECT LOGO -->
