@@ -92,30 +92,32 @@ class RegrasPacientes {
         }
     }
     isValidPaciente(paciente) {
-        // Validações obrigatórias
-        if (!paciente.id && !paciente.codigo || (paciente.id === 'undefined' && paciente.codigo === 'undefined') || (!paciente.id && paciente.codigo === '')) {
+        // Validações obrigatórias - handle both lowercase and capitalized field names
+        const codigo = paciente.id || paciente.codigo || paciente.Codigo;
+        if (!codigo || codigo === 'undefined' || codigo === '') {
             return false;
         }
-        if (!paciente.nome_completo || paciente.nome_completo === 'undefined') {
+        const nomeCompleto = paciente.nome_completo || paciente.Nome_Completo;
+        if (!nomeCompleto || nomeCompleto === 'undefined') {
             return false;
         }
         // Verificar cod_municipio ou cidade
-        if ((!paciente.cod_municipio && !paciente.cidade) ||
-            (paciente.cod_municipio === 'undefined' && paciente.cidade === 'undefined')) {
+        const codMunicipio = paciente.cod_municipio || paciente.cidade || paciente.Cod_municipio;
+        if (!codMunicipio || codMunicipio === 'undefined') {
             return false;
         }
         return true;
     }
     sanitizePaciente(paciente) {
         return {
-            codigo: this.sanitizeString(paciente.id || paciente.codigo),
-            cpf: this.sanitizeString(paciente.cpf),
-            nome_completo: this.sanitizeString(paciente.nome_completo),
-            genero: this.sanitizeString(paciente.genero),
-            cod_municipio: this.sanitizeString(paciente.cod_municipio || paciente.cidade),
-            bairro: this.sanitizeString(paciente.bairro),
-            convenio: this.sanitizeString(paciente.convenio),
-            cid: this.sanitizeString(paciente.cid)
+            codigo: this.sanitizeString(paciente.id || paciente.codigo || paciente.Codigo),
+            cpf: this.sanitizeString(paciente.cpf || paciente.CPF),
+            nome_completo: this.sanitizeString(paciente.nome_completo || paciente.Nome_Completo),
+            genero: this.sanitizeString(paciente.genero || paciente.Genero),
+            cod_municipio: this.sanitizeString(paciente.cod_municipio || paciente.cidade || paciente.Cod_municipio),
+            bairro: this.sanitizeString(paciente.bairro || paciente.Bairro),
+            convenio: this.sanitizeString(paciente.convenio || paciente.Convenio),
+            cid: this.sanitizeString(paciente.cid || paciente['CID-10'])
         };
     }
     sanitizeString(value) {
