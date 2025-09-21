@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Estado } from "@/types/estado";
 
-export async function fetchEstados(): Promise<Estado[]> {
+export async function fetchEstados(): Promise<{ data: Estado[] }> {
   const response = await fetch("http://localhost:3000/estados");
 
   if (!response.ok) {

@@ -46,7 +46,7 @@ const routes: Route[] = [
   { name: "Médicos", path: "/medico" },
   { name: "Pacientes", path: "/pacientes" },
   { name: "Hospitais", path: "/hospitais" },
-  { name: "Estados", path: "/estados" },
+  // { name: "Estados", path: "/estados" },
   { name: "Municípios", path: "/municipios" },
   { name: "CID", path: "/cid" },
 ];

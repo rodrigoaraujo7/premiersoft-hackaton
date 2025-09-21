@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Medico } from "@/types/medicos";
 
-export async function fetchMedicos(): Promise<Medico[]> {
+export async function fetchMedicos(): Promise<{ data: Medico[] }> {
   const response = await fetch("http://localhost:3000/medicos");
 
   if (!response.ok) {

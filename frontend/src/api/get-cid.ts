@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { CID } from "@/types/cid";
 
-export async function fetchCID(): Promise<CID[]> {
+export async function fetchCID(): Promise<{ data: CID[] }> {
   const response = await fetch("http://localhost:3000/cid");
 
   if (!response.ok) {
