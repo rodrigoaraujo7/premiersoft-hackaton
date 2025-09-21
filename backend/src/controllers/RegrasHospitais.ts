@@ -64,6 +64,13 @@ export class RegrasHospitais {
       console.error('Erro geral no processamento:', error);
       throw error;
     } finally {
+      // Limpar arquivos temporários antigos da pasta resources
+      try {
+        await this.cleanupOldFiles();
+      } catch (cleanupError) {
+        console.warn('Erro durante limpeza de arquivos temporários:', cleanupError);
+      }
+
       // Sempre desconectar do banco de dados
       try {
         await this.migrateService.disconnect();
@@ -123,5 +130,64 @@ export class RegrasHospitais {
 
     const num = Number(value);
     return isNaN(num) ? null : num;
+  }
+
+  private async cleanupOldFiles(): Promise<void> {
+    try {
+      const resourcesDir = path.join(__dirname, '..', 'resources');
+      const sqlDir = path.join(resourcesDir, 'sql');
+      let cleanedCount = 0;
+
+      // Função auxiliar para limpar arquivos em um diretório
+      const cleanupDirectory = async (dirPath: string, dirName: string): Promise<void> => {
+        try {
+          await fs.access(dirPath);
+        } catch {
+          console.log(`Diretório ${dirName} não encontrado, pulando limpeza`);
+          return;
+        }
+
+        const files = await fs.readdir(dirPath);
+
+        for (const file of files) {
+          const filePath = path.join(dirPath, file);
+          const stats = await fs.stat(filePath);
+
+          // Remover apenas arquivos (não diretórios)
+          if (stats.isFile()) {
+            const ext = path.extname(file).toLowerCase();
+
+            // Remover arquivos .json e .sql temporários
+            if (ext === '.json' || ext === '.sql') {
+              // Verificar se é um arquivo temporário (contém timestamp no nome)
+              if (file.includes('-') && (file.includes('hospital-data') || file.includes('data-'))) {
+                try {
+                  await fs.unlink(filePath);
+                  console.log(`Arquivo temporário removido: ${file}`);
+                  cleanedCount++;
+                } catch (error) {
+                  console.warn(`Erro ao remover arquivo ${file}:`, error);
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // Limpar diretório resources
+      await cleanupDirectory(resourcesDir, 'resources');
+
+      // Limpar diretório resources/sql
+      await cleanupDirectory(sqlDir, 'resources/sql');
+
+      if (cleanedCount > 0) {
+        console.log(`Limpeza concluída: ${cleanedCount} arquivos temporários removidos`);
+      } else {
+        console.log('Nenhum arquivo temporário encontrado para limpeza');
+      }
+
+    } catch (error) {
+      console.warn('Erro durante limpeza de arquivos temporários:', error);
+    }
   }
 }

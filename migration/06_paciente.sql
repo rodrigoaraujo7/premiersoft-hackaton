@@ -7,11 +7,5 @@ CREATE TABLE IF NOT EXISTS pacientes (
   cod_municipio UUID,
   bairro TEXT,
   convenio TEXT,
-  cid UUID,
-  FOREIGN KEY (cod_municipio) REFERENCES municipios(codigo_ibge),
-  FOREIGN KEY (cid) REFERENCES CID_10(cid_id)
+  cid UUID
 );
-
-
---Indice na coluna cpf da tabela para agilizar pesquisas.
-CREATE INDEX idx_pacientes_cpf ON pacientes(cpf);
