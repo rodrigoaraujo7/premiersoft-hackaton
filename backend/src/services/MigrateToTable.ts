@@ -44,6 +44,16 @@ export class MigrateToTable {
     }
   }
 
+  async executeQuery(sql: string, params: any[] = []): Promise<any> {
+    try {
+      const result = await this.client.query(sql, params);
+      return result;
+    } catch (error) {
+      console.error('Error executing query:', error);
+      throw error;
+    }
+  }
+
   private getSqlFiles(): string[] {
     try {
       if (!fs.existsSync(this.sqlDir)) {
