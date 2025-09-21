@@ -1,4 +1,4 @@
-<img width="822" height="841" alt="EstruturaGeraldodocker (3)" src="https://github.com/user-attachments/assets/136b7da7-d431-4c29-bb02-11e4d47e2b6a" /><!-- Improved compatibility of Voltar pro topo link -->
+-- Improved compatibility of Voltar pro topo link -->
 <a id="readme-top"></a>
 
 <!-- PROJECT LOGO -->
