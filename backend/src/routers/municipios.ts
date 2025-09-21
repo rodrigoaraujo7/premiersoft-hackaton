@@ -1,9 +1,11 @@
-import { FastifyInstance } from 'fastify';
-import { RegrasMunicipios } from '../controllers/RegrasMunicipios';
+import { FastifyInstance } from "fastify";
+import { RegrasMunicipios } from "../controllers/RegrasMunicipios";
 
 export async function municipiosRoutes(fastify: FastifyInstance) {
-  fastify.get('/municipios', async (req, reply) => {
+  fastify.get("/municipios", async (req, reply) => {
     try {
+      return reply.send({ ok: true });
+
       const regras = new RegrasMunicipios();
       const data = await regras.getAll();
       return reply.send({ data });

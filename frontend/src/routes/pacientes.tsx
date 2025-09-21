@@ -83,7 +83,7 @@ function RouteComponent() {
     return (
       <section className="container mx-auto py-10">
         <div className="flex justify-center items-center h-64">
-          <p className="text-lg">Carregando médicos...</p>
+          <p className="text-lg">Carregando pacientes...</p>
         </div>
       </section>
     );
@@ -95,7 +95,7 @@ function RouteComponent() {
         <Alert variant="destructive">
           <AlertTitle>Erro!</AlertTitle>
           <AlertDescription>
-            Erro ao carregar os dados dos médicos: {error.message}
+            Erro ao carregar os dados dos pacientes: {error.message}
           </AlertDescription>
         </Alert>
       </section>

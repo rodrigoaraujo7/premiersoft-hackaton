@@ -1,15 +1,15 @@
-import { FastifyInstance } from 'fastify';
-import { PatientUploadService } from '../services/upload/pacienteUploadService';
-import { RegrasPacientes } from '../controllers/RegrasPacientes';
+import { FastifyInstance } from "fastify";
+import { PatientUploadService } from "../services/upload/pacienteUploadService";
+import { RegrasPacientes } from "../controllers/RegrasPacientes";
 
 export async function patientUploadRoutes(fastify: FastifyInstance) {
   const patientUploadService = new PatientUploadService();
 
-  fastify.post('/upload/pacientes', async (req, reply) => {
+  fastify.post("/upload/pacientes", async (req, reply) => {
     const data = await req.file();
 
     if (!data) {
-      return reply.status(400).send({ error: 'No file uploaded' });
+      return reply.status(400).send({ error: "No file uploaded" });
     }
 
     try {
@@ -20,8 +20,10 @@ export async function patientUploadRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get('/pacientes', async (req, reply) => {
+  fastify.get("/pacientes", async (req, reply) => {
     try {
+      return reply.send({ ok: true });
+
       const regras = new RegrasPacientes();
       const data = await regras.getAll();
       return reply.send({ data });

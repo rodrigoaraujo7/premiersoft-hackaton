@@ -1,15 +1,15 @@
-import { FastifyInstance } from 'fastify';
-import { HospitalUploadService } from '../services/upload/hospitalUploadService';
-import { RegrasHospitais } from '../controllers/RegrasHospitais';
+import { FastifyInstance } from "fastify";
+import { HospitalUploadService } from "../services/upload/hospitalUploadService";
+import { RegrasHospitais } from "../controllers/RegrasHospitais";
 
 export async function hospitalUploadRoutes(fastify: FastifyInstance) {
   const hospitalUploadService = new HospitalUploadService();
 
-  fastify.post('/upload/hospitais', async (req, reply) => {
+  fastify.post("/upload/hospitais", async (req, reply) => {
     const data = await req.file();
 
     if (!data) {
-      return reply.status(400).send({ error: 'No file uploaded' });
+      return reply.status(400).send({ error: "No file uploaded" });
     }
 
     try {
@@ -20,8 +20,10 @@ export async function hospitalUploadRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get('/hospitais', async (req, reply) => {
+  fastify.get("/hospitais", async (req, reply) => {
     try {
+      return reply.send({ ok: true });
+
       const regras = new RegrasHospitais();
       const data = await regras.getAll();
       return reply.send({ data });
