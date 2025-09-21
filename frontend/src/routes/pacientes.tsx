@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { type ColumnDef } from "@tanstack/react-table";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import { PieChart } from "@/components/ui/pie-chart";
+import type { ChartConfig } from "@/components/ui/chart";
 
 import type { Paciente } from "@/types/paciente";
-import type { ChartConfig } from "@/components/ui/chart";
 
 export const Route = createFileRoute("/pacientes")({
   component: RouteComponent,
@@ -99,12 +100,21 @@ function RouteComponent() {
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: PIZZA -> mostrar distribuição por convenio */}
-      <PieChart
-        chartConfig={pieChartConfig}
-        chartData={pieChartData}
-        label="Distribuição de pacientes por convenio"
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: PIZZA -> mostrar distribuição por convenio */}
+        <PieChart
+          chartConfig={pieChartConfig}
+          chartData={pieChartData}
+          label="Distribuição de pacientes por convenio"
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 

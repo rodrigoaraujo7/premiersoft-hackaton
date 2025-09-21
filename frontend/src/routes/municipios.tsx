@@ -4,9 +4,10 @@ import { type ColumnDef } from "@tanstack/react-table";
 
 import { DataTable } from "@/components/ui/data-table";
 import { AreaChart } from "@/components/ui/area-chart";
+import type { ChartConfig } from "@/components/ui/chart";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import type { Municipio } from "@/types/municipios";
-import type { ChartConfig } from "@/components/ui/chart";
 
 export const Route = createFileRoute("/municipios")({
   component: RouteComponent,
@@ -188,14 +189,23 @@ function RouteComponent() {
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Mostrar quantidade de pacientes e hospitais por municipio */}
-      <AreaChart
-        chartConfig={chartConfig}
-        chartData={chartData}
-        label="Quantidade de pacientes e hospitais por municipio"
-        select
-        selectOptions={selectOptions}
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: Mostrar quantidade de pacientes e hospitais por municipio */}
+        <AreaChart
+          chartConfig={chartConfig}
+          chartData={chartData}
+          label="Quantidade de pacientes e hospitais por municipio"
+          select
+          selectOptions={selectOptions}
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 
