@@ -21,6 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "./button";
+
+import { Sparkles } from "lucide-react";
 
 type AreaChartProps<T> = {
   chartConfig: ChartConfig;
@@ -43,28 +51,41 @@ export function AreaChart<T>({
 }: AreaChartProps<T>) {
   return (
     <Card className="pt-0">
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
+      <CardHeader className="flex items-center gap-2 space-y-0 p-6 border-b sm:flex-row">
         <div className="grid flex-1 gap-1">
           <CardTitle>{label}</CardTitle>
         </div>
 
-        {select && (
-          <Select defaultValue={selectOptions?.[0].value}>
-            <SelectTrigger
-              className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
-              aria-label="Selecione um estado"
-            >
-              <SelectValue placeholder="Selecione um estado" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              {selectOptions?.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
+        <div className="flex items-center gap-1">
+          {select && (
+            <Select defaultValue={selectOptions?.[0].value}>
+              <SelectTrigger
+                className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
+                aria-label="Selecione um estado"
+              >
+                <SelectValue placeholder="Selecione um estado" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {selectOptions?.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Button>
+                <Sparkles size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Análise por IA</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer

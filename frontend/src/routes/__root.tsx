@@ -76,7 +76,6 @@ const RootLayout = () => {
     setSelectedFile(null);
     setSelectedCategory("");
     setUploadProgress(0);
-    setUploadStatus("");
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,7 +229,9 @@ const RootLayout = () => {
                   <SelectItem value="medico">Médicos</SelectItem>
                   <SelectItem value="paciente">Pacientes</SelectItem>
                   <SelectItem value="hospital">Hospitais</SelectItem>
-                  <SelectItem value="estado">Estados</SelectItem>
+                  <SelectItem value="estado" disabled>
+                    Estados
+                  </SelectItem>
                   <SelectItem value="municipio">Municípios</SelectItem>
                   <SelectItem value="cid">CID</SelectItem>
                 </SelectContent>
@@ -240,8 +241,11 @@ const RootLayout = () => {
               {uploadProgress > 0 && (
                 <div className="space-y-2">
                   <Progress value={uploadProgress} className="w-full" />
-                  <p className="text-sm text-gray-600">{uploadStatus}</p>
                 </div>
+              )}
+
+              {uploadStatus && (
+                <p className="text-sm text-gray-600">{uploadStatus}</p>
               )}
 
               {/* Action buttons */}

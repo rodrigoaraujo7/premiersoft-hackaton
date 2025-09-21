@@ -14,6 +14,14 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "./button";
+
+import { Sparkles } from "lucide-react";
 
 type BarChartProps<T> = {
   chartConfig: ChartConfig;
@@ -30,6 +38,19 @@ export const BarChart = <T,>({
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
         <CardTitle className="grid flex-1 gap-1">{label}</CardTitle>
+
+        <div className="flex items-center gap-1">
+          <Tooltip>
+            <TooltipTrigger>
+              <Button>
+                <Sparkles size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Análise por IA</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
