@@ -86,8 +86,13 @@ Migrar DB:
 ```sh
 docker-compose down -v
 docker-compose build
-docker-compose up
+docker-compose up -d
 ```
+
+Derrubar:
+''''
+docker-compose down # 
+''''
 
 ## Usagem
 
