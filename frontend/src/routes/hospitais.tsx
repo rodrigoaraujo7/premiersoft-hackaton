@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { type ColumnDef } from "@tanstack/react-table";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { BarChart } from "@/components/ui/bar-chart";
@@ -121,21 +122,39 @@ function RouteComponent() {
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Mostrar quantos leitos existem em cada especialidade hospitalar */}
-      <BarChart
-        chartConfig={barchartConfig}
-        chartData={barChartData}
-        label="Quantidade de leitos por especialidade hospitalar"
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: Mostrar quantos leitos existem em cada especialidade hospitalar */}
+        <BarChart
+          chartConfig={barchartConfig}
+          chartData={barChartData}
+          label="Quantidade de leitos por especialidade hospitalar"
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 
-      {/* TODO: PIZZA -> mostrar distribuição de hospitais por região */}
-      <PieChart
-        chartConfig={pieChartConfig}
-        chartData={pieChartData}
-        label="Distribuição de hospitais por região"
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: PIZZA -> mostrar distribuição de hospitais por região */}
+        <PieChart
+          chartConfig={pieChartConfig}
+          chartData={pieChartData}
+          label="Distribuição de hospitais por região"
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { type ColumnDef } from "@tanstack/react-table";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import { BarChart } from "@/components/ui/bar-chart";
 import { PieChart } from "@/components/ui/pie-chart";
@@ -104,23 +105,41 @@ function RouteComponent() {
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Mostrar quantos médicos existem em cada especialidade */}
-      <BarChart
-        chartConfig={barchartConfig}
-        chartData={barChartData}
-        label="Quantidade de médicos por especialidade"
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: Mostrar quantos médicos existem em cada especialidade */}
+        <BarChart
+          chartConfig={barchartConfig}
+          chartData={barChartData}
+          label="Quantidade de médicos por especialidade"
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 
-      {/* TODO: mostrar a distribuição de médicos por cidade */}
-      <PieChart
-        chartConfig={pieChartConfig}
-        chartData={pieChartData}
-        label="Distribuição de médicos por cidade"
-        select
-        selectOptions={selectOptions}
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: mostrar a distribuição de médicos por cidade */}
+        <PieChart
+          chartConfig={pieChartConfig}
+          chartData={pieChartData}
+          label="Distribuição de médicos por cidade"
+          select
+          selectOptions={selectOptions}
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 

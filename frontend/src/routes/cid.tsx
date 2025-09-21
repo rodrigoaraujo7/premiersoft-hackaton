@@ -5,6 +5,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { RadarChart } from "@/components/ui/radar-chart";
 import type { ChartConfig } from "@/components/ui/chart";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import type { CID } from "@/types/cid";
 
@@ -52,14 +53,23 @@ function RouteComponent() {
 
   return (
     <section className="container mx-auto py-10">
-      {/* TODO: Mostrar quantidade de cid por região */}
-      <RadarChart
-        chartConfig={chartConfig}
-        chartData={chartData}
-        label="Quantidade de CID por região"
-        select
-        selectOptions={selectOptions}
-      />
+      <div className="flex flex-col gap-2">
+        {/* TODO: Mostrar quantidade de cid por região */}
+        <RadarChart
+          chartConfig={chartConfig}
+          chartData={chartData}
+          label="Quantidade de CID por região"
+          select
+          selectOptions={selectOptions}
+        />
+
+        <Alert variant="default" className="bg-gray-100">
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You can add components and dependencies to your app using the cli.
+          </AlertDescription>
+        </Alert>
+      </div>
 
       <br />
 
