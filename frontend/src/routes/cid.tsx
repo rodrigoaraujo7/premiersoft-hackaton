@@ -8,17 +8,11 @@ import type { ChartConfig } from "@/components/ui/chart";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import type { CID } from "@/types/cid";
+import { useCID } from "@/api/get-cid";
 
 export const Route = createFileRoute("/cid")({
   component: RouteComponent,
 });
-
-const defaultData: CID[] = [
-  {
-    codigo: "1",
-    descricao: "CID X",
-  },
-];
 
 const columns: ColumnDef<CID>[] = [
   {
@@ -49,7 +43,30 @@ const chartConfig = {
 const selectOptions = [{ value: "1", label: "CID" }];
 
 function RouteComponent() {
-  const data = defaultData;
+  const { data: cid, isLoading, error } = useCID();
+
+  if (isLoading) {
+    return (
+      <section className="container mx-auto py-10">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-lg">Carregando cid...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto py-10">
+        <Alert variant="destructive">
+          <AlertTitle>Erro!</AlertTitle>
+          <AlertDescription>
+            Erro ao carregar os dados dos cid: {error.message}
+          </AlertDescription>
+        </Alert>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto py-10">
@@ -73,7 +90,7 @@ function RouteComponent() {
 
       <br />
 
-      <DataTable data={data} columns={columns} />
+      <DataTable data={cid?.data || []} columns={columns} />
     </section>
   );
 }

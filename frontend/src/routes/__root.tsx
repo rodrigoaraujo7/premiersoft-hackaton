@@ -229,11 +229,6 @@ const RootLayout = () => {
                   <SelectItem value="medico">Médicos</SelectItem>
                   <SelectItem value="paciente">Pacientes</SelectItem>
                   <SelectItem value="hospital">Hospitais</SelectItem>
-                  <SelectItem value="estado" disabled>
-                    Estados
-                  </SelectItem>
-                  <SelectItem value="municipio">Municípios</SelectItem>
-                  <SelectItem value="cid">CID</SelectItem>
                 </SelectContent>
               </Select>
 

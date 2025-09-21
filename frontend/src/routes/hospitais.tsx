@@ -7,50 +7,33 @@ import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { BarChart } from "@/components/ui/bar-chart";
 import { PieChart } from "@/components/ui/pie-chart";
+import type { ChartConfig } from "@/components/ui/chart";
 
 import { ArrowUpDown } from "lucide-react";
 
 import type { Hospital } from "@/types/hospital";
-import type { ChartConfig } from "@/components/ui/chart";
+
+import { useHospitais } from "@/api/get-hospitais";
 
 export const Route = createFileRoute("/hospitais")({
   component: RouteComponent,
 });
 
-const defaultData: Hospital[] = [
-  {
-    codigo: "1",
-    nome: "Hospital X",
-    cidade: 1,
-    bairro: "Bairro X",
-    especialidade: "Cardiologista",
-    leitos_totais: 100,
-  },
-];
-
 const columns: ColumnDef<Hospital>[] = [
-  {
-    accessorKey: "codigo",
-    header: "Código",
-  },
   {
     accessorKey: "nome",
     header: "Nome",
-  },
-  {
-    accessorKey: "cidade",
-    header: "Cidade",
   },
   {
     accessorKey: "bairro",
     header: "Bairro",
   },
   {
-    accessorKey: "especialidade",
-    header: "Especialidade",
+    accessorKey: "especialidades",
+    header: "Especialidades",
   },
   {
-    accessorKey: "leitos_totais",
+    accessorKey: "leitos",
     header: ({ column }) => {
       return (
         <Button
@@ -118,8 +101,30 @@ const pieChartConfig = {
 } satisfies ChartConfig;
 
 function RouteComponent() {
-  const data = defaultData;
+  const { data: hospitais, isLoading, error } = useHospitais();
 
+  if (isLoading) {
+    return (
+      <section className="container mx-auto py-10">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-lg">Carregando hospitais...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto py-10">
+        <Alert variant="destructive">
+          <AlertTitle>Erro!</AlertTitle>
+          <AlertDescription>
+            Erro ao carregar os dados dos hospitais: {error.message}
+          </AlertDescription>
+        </Alert>
+      </section>
+    );
+  }
   return (
     <section className="container mx-auto py-10">
       <div className="flex flex-col gap-2">
@@ -158,7 +163,7 @@ function RouteComponent() {
 
       <br />
 
-      <DataTable data={data} columns={columns} />
+      <DataTable data={hospitais?.data || []} columns={columns} />
     </section>
   );
 }

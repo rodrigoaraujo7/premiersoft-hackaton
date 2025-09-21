@@ -6,39 +6,28 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import { BarChart } from "@/components/ui/bar-chart";
 import { PieChart } from "@/components/ui/pie-chart";
+import type { ChartConfig } from "@/components/ui/chart";
 
 import type { Medico } from "@/types/medicos";
-import type { ChartConfig } from "@/components/ui/chart";
+
+import { useMedicos } from "@/api/get-medicos";
 
 export const Route = createFileRoute("/medico")({
   component: RouteComponent,
 });
 
-const defaultData: Medico[] = [
-  {
-    id: "1",
-    nome_completo: "João da Silva",
-    especialidade: "Cardiologista",
-    cidade: 1,
-  },
-];
-
 const columns: ColumnDef<Medico>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
   {
     accessorKey: "nome_completo",
     header: "Nome",
   },
   {
-    accessorKey: "especialidade",
+    accessorKey: "especialidade_medico",
     header: "Especialidade",
   },
   {
-    accessorKey: "cidade",
-    header: "Cidade",
+    accessorKey: "cod_municipio",
+    header: "Código do Município",
   },
 ];
 
@@ -101,7 +90,30 @@ const selectOptions = [
 ];
 
 function RouteComponent() {
-  const data = defaultData;
+  const { data: medicos, isLoading, error } = useMedicos();
+
+  if (isLoading) {
+    return (
+      <section className="container mx-auto py-10">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-lg">Carregando médicos...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto py-10">
+        <Alert variant="destructive">
+          <AlertTitle>Erro!</AlertTitle>
+          <AlertDescription>
+            Erro ao carregar os dados dos médicos: {error.message}
+          </AlertDescription>
+        </Alert>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto py-10">
@@ -143,7 +155,7 @@ function RouteComponent() {
 
       <br />
 
-      <DataTable data={data} columns={columns} />
+      <DataTable data={medicos?.data || []} columns={columns} />
     </section>
   );
 }

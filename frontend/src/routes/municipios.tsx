@@ -9,24 +9,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import type { Municipio } from "@/types/municipios";
 
+import { useMunicipios } from "@/api/get-municipios";
+
 export const Route = createFileRoute("/municipios")({
   component: RouteComponent,
 });
-
-const defaultData: Municipio[] = [
-  {
-    codigo_ibge: 1,
-    nome: "Município X",
-    latitude: 1,
-    longitude: 1,
-    capital: 1,
-    codigo_uf: 1,
-    siafi_if: 1,
-    ddd: 1,
-    fuso_horario: "1",
-    população: 1,
-  },
-];
 
 const columns: ColumnDef<Municipio>[] = [
   {
@@ -185,7 +172,30 @@ const selectOptions = [
 ];
 
 function RouteComponent() {
-  const data = defaultData;
+  const { data: municipios, isLoading, error } = useMunicipios();
+
+  if (isLoading) {
+    return (
+      <section className="container mx-auto py-10">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-lg">Carregando municipios...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto py-10">
+        <Alert variant="destructive">
+          <AlertTitle>Erro!</AlertTitle>
+          <AlertDescription>
+            Erro ao carregar os dados dos municipios: {error.message}
+          </AlertDescription>
+        </Alert>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto py-10">
@@ -209,7 +219,7 @@ function RouteComponent() {
 
       <br />
 
-      <DataTable data={data} columns={columns} />
+      <DataTable data={municipios?.data || []} columns={columns} />
     </section>
   );
 }
