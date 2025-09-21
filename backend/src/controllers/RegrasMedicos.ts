@@ -97,6 +97,19 @@ export class RegrasMedicos {
     }
   }
 
+  async getAll(): Promise<any[]> {
+    try {
+      await this.migrateService.connect();
+      const data = await this.migrateService.getAllMedicos();
+      return data;
+    } catch (error) {
+      console.error('Erro ao obter médicos:', error);
+      throw error;
+    } finally {
+      await this.migrateService.disconnect();
+    }
+  }
+
   private isValidMedico(medico: any): boolean {
     // Validações obrigatórias
     if (!medico.id && !medico.codigo || (medico.id === 'undefined' && medico.codigo === 'undefined') || (!medico.id && medico.codigo === '')) {

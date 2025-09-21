@@ -97,6 +97,19 @@ export class RegrasPacientes {
     }
   }
 
+  async getAll(): Promise<any[]> {
+    try {
+      await this.migrateService.connect();
+      const data = await this.migrateService.getAllPacientes();
+      return data;
+    } catch (error) {
+      console.error('Erro ao obter pacientes:', error);
+      throw error;
+    } finally {
+      await this.migrateService.disconnect();
+    }
+  }
+
   private isValidPaciente(paciente: any): boolean {
     // Validações obrigatórias - handle both lowercase and capitalized field names
     const codigo = paciente.id || paciente.codigo || paciente.Codigo;

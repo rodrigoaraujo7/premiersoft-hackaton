@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { MedicoUploadService } from '../services/upload/medicoUploadService';
+import { RegrasMedicos } from '../controllers/RegrasMedicos';
 
 export async function medicoUploadRoutes(fastify: FastifyInstance) {
   const medicoUploadService = new MedicoUploadService();
@@ -16,6 +17,16 @@ export async function medicoUploadRoutes(fastify: FastifyInstance) {
       return reply.send({ result });
     } catch (error: any) {
       return reply.status(400).send({ error: error.message });
+    }
+  });
+
+  fastify.get('/medicos', async (req, reply) => {
+    try {
+      const regras = new RegrasMedicos();
+      const data = await regras.getAll();
+      return reply.send({ data });
+    } catch (error: any) {
+      return reply.status(500).send({ error: error.message });
     }
   });
 }

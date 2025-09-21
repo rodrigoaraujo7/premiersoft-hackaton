@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { PatientUploadService } from '../services/upload/pacienteUploadService';
+import { RegrasPacientes } from '../controllers/RegrasPacientes';
 
 export async function patientUploadRoutes(fastify: FastifyInstance) {
   const patientUploadService = new PatientUploadService();
@@ -16,6 +17,16 @@ export async function patientUploadRoutes(fastify: FastifyInstance) {
       return reply.send({ result });
     } catch (error: any) {
       return reply.status(400).send({ error: error.message });
+    }
+  });
+
+  fastify.get('/pacientes', async (req, reply) => {
+    try {
+      const regras = new RegrasPacientes();
+      const data = await regras.getAll();
+      return reply.send({ data });
+    } catch (error: any) {
+      return reply.status(500).send({ error: error.message });
     }
   });
 }

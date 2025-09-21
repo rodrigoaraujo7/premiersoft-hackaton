@@ -98,6 +98,19 @@ export class RegrasHospitais {
     }
   }
 
+  async getAll(): Promise<any[]> {
+    try {
+      await this.migrateService.connect();
+      const data = await this.migrateService.getAllHospitais();
+      return data;
+    } catch (error) {
+      console.error('Erro ao obter hospitais:', error);
+      throw error;
+    } finally {
+      await this.migrateService.disconnect();
+    }
+  }
+
   private isValidHospital(hospital: any): boolean {
     // Validações obrigatórias
     if (!hospital.codigo || hospital.codigo === 'undefined' || hospital.codigo === '') {

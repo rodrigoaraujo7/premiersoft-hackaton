@@ -251,6 +251,39 @@ export class MigrateToTable {
     }
   }
 
+  // Método para obter todos os pacientes
+  async getAllPacientes(): Promise<any[]> {
+    try {
+      const result = await this.executeQuery('SELECT * FROM pacientes');
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao obter pacientes:', error);
+      throw error;
+    }
+  }
+
+  // Método para obter todos os médicos
+  async getAllMedicos(): Promise<any[]> {
+    try {
+      const result = await this.executeQuery('SELECT * FROM medicos');
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao obter médicos:', error);
+      throw error;
+    }
+  }
+
+  // Método para obter todos os hospitais
+  async getAllHospitais(): Promise<any[]> {
+    try {
+      const result = await this.executeQuery('SELECT * FROM hospitais');
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao obter hospitais:', error);
+      throw error;
+    }
+  }
+
   private deleteSqlFile(filePath: string): void {
     try {
       fs.unlinkSync(filePath);
