@@ -5,7 +5,8 @@
 <br />
 <div align="center">
   <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton">
-    <img width="822" height="841" alt="EstruturaGeraldodocker (3)" src="https://github.com/user-attachments/assets/4aa90e26-26ff-47bc-beb2-54e226c2f6f7" />
+    <img width="822" height="841" alt="EstruturaGeraldodocker drawio (1)" src="https://github.com/user-attachments/assets/8adaa41e-dd64-46be-b4a6-b894547f9cbd" />
+
 
 
   </a>
