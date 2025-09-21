@@ -1,11 +1,12 @@
-<!-- Improved compatibility of Voltar pro topo link -->
+<img width="822" height="841" alt="EstruturaGeraldodocker (3)" src="https://github.com/user-attachments/assets/136b7da7-d431-4c29-bb02-11e4d47e2b6a" /><!-- Improved compatibility of Voltar pro topo link -->
 <a id="readme-top"></a>
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/rodrigoaraujo7/premiersoft-hackaton">
-    <img width="823" height="861" alt="EstruturaGeraldodocker drawio" src="https://github.com/user-attachments/assets/08ad2777-1c10-40a3-aa8b-10b46281ad19" />
+    <img width="822" height="841" alt="EstruturaGeraldodocker (3)" src="https://github.com/user-attachments/assets/4aa90e26-26ff-47bc-beb2-54e226c2f6f7" />
+
 
   </a>
 
