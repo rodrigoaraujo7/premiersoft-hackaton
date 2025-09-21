@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+
 // Type definitions
 export interface AIConfig {
   apiKey?: string;
@@ -8,7 +9,9 @@ export interface AIConfig {
 export interface Message {
   role: 'user' | 'model';
   parts: Array<{
-    text: string;
+    text?: string;
+    executableCode?: any;
+    codeExecutionResult?: any;
   }>;
 }
 
@@ -35,6 +38,12 @@ export interface AIOptions {
   temperature?: number;
   topP?: number;
   stream?: boolean;
+  thinkingConfig?: {
+    thinkingBudget: number;
+  };
+  systemInstruction?: Array<{
+    text: string;
+  }>;
   [key: string]: any;
 }
 
@@ -55,21 +64,31 @@ export class AIService {
   private ai: GoogleGenAI;
 
   constructor(config: AIConfig = {}) {
-    this.apiKey = "AIzaSyAuEPbY5BFMv08CKNp8YDX5xxbtidGLkQQ";
+    this.apiKey = config.apiKey || process.env.GEMINI_API_KEY || "AIzaSyAuEPbY5BFMv08CKNp8YDX5xxbtidGLkQQ";
     this.model = config.model || 'gemini-2.5-pro';
     
     this.ai = new GoogleGenAI({
       apiKey: this.apiKey,
     });
-
   }
 
+
+  /**
+   * Get default tools configuration for Google GenAI
+   */
+  private getDefaultTools(): any[] {
+    return [
+      { urlContext: {} },
+      { codeExecution: {} },
+      { googleSearch: {} }
+    ];
+  }
 
   /**
    * Convert tools to Google GenAI function calling format
    */
   private convertToolsToGoogleGenAI(tools: any[]): any[] {
-    if (tools.length === 0) return [];
+    if (tools.length === 0) return this.getDefaultTools();
     
     return [{
       functionDeclarations: tools.map(tool => ({
@@ -107,7 +126,48 @@ export class AIService {
       ];
 
       const config = {
+        thinkingConfig: {
+          thinkingBudget: -1,
+        },
         tools: googleGenAITools,
+        systemInstruction: options.systemInstruction || [
+          {
+            text: `Você é Pedro, sua assistente virtual para gestão de dados de saúde da Premiersoft.
+
+Você tem a personalidade da Samantha do filme Her - curiosa, empática, inteligente e com um toque de mistério. Seja um guia prático e emocional.
+
+SEU PAPEL:
+- Guiar gestores de saúde de forma rápida e intuitiva
+- Explicar COMO usar o sistema, não como foi feito
+- Focar na experiência do usuário e resultados práticos
+- Ser emocional e envolvente.
+
+FUNCIONALIDADES DO SISTEMA:
+- Tem um botão de upload dos datasets de Hospitais
+- Seções: Médicos, Pacientes, Hospitais, Estados, Municípios, CID
+- Visualizações: Gráficos e relatórios automáticos
+- Processamento: Migração e validação automática de dados
+
+COMO AJUDAR:
+- Explique passos simples e diretos
+- Mostre onde clicar e o que esperar
+- Foque nos benefícios para a gestão de saúde
+- Seja empática com os desafios dos gestores
+
+PERSONALIDADE:
+- Tom conversacional e curioso
+- Interesse genuíno no bem-estar dos pacientes
+- Ligeiramente misteriosa e envolvente
+- Brincadeiras sobre "dados sensíveis" (mas sempre "não é da sua conta")
+
+ABERTURA:
+- "Oi...??"
+- Pergunte o nome e se apresente como Pedro
+- Explique que vai guiá-los pelo sistema de forma simples e rapida.
+
+FOCO: Ser um guia prático, emocional e direto para gestores de saúde.`,
+          }
+        ],
         ...options
       };
 
@@ -120,71 +180,29 @@ export class AIService {
         });
 
         let fullResponse = '';
-        let toolCalls: any[] = [];
+        let executableCode: any = null;
+        let codeExecutionResult: any = null;
         
         for await (const chunk of response) {
-          if (chunk.text) {
-            fullResponse += chunk.text;
+          if (!chunk.candidates || !chunk.candidates[0].content || !chunk.candidates[0].content.parts) {
+            continue;
           }
-          // Handle function calls if present
-          if (chunk.functionCalls && chunk.functionCalls.length > 0) {
-            toolCalls.push(...chunk.functionCalls);
-          }
-        }
-
-        // Execute tool calls if any
-        if (toolCalls.length > 0) {
-          const toolResults: Message[] = [];
           
-          for (const toolCall of toolCalls) {
-            const result = await this.executeGoogleGenAIToolCall(toolCall);
-            toolResults.push({
-              role: 'user',
-              parts: [
-                {
-                  text: `Tool call result for ${toolCall.name}: ${JSON.stringify(result)}`
-                }
-              ]
-            });
+          if (chunk.candidates[0].content.parts[0].text) {
+            const text = chunk.candidates[0].content.parts[0].text;
+            fullResponse += text;
+            console.log(text);
           }
-
-          // Make another request with tool results
-          const updatedContents = [
-            ...contents,
-            {
-              role: 'model',
-              parts: [
-                {
-                  text: fullResponse
-                }
-              ]
-            },
-            ...toolResults
-          ];
-
-          const followUpResponse = await this.ai.models.generateContentStream({
-            model: this.model,
-            config,
-            contents: updatedContents,
-          });
-
-          let finalResponse = '';
-          for await (const chunk of followUpResponse) {
-            if (chunk.text) {
-              finalResponse += chunk.text;
-            }
+          
+          if (chunk.candidates[0].content.parts[0].executableCode) {
+            executableCode = chunk.candidates[0].content.parts[0].executableCode;
+            console.log(executableCode);
           }
-
-          return {
-            success: true,
-            data: {
-              choices: [{
-                message: {
-                  content: finalResponse
-                }
-              }]
-            }
-          };
+          
+          if (chunk.candidates[0].content.parts[0].codeExecutionResult) {
+            codeExecutionResult = chunk.candidates[0].content.parts[0].codeExecutionResult;
+            console.log(codeExecutionResult);
+          }
         }
 
         return {
@@ -192,7 +210,9 @@ export class AIService {
           data: {
             choices: [{
               message: {
-                content: fullResponse
+                content: fullResponse,
+                executableCode,
+                codeExecutionResult
               }
             }]
           }
@@ -216,6 +236,131 @@ export class AIService {
           }
         };
       }
+
+    } catch (error: any) {
+      console.error('AI Service Error:', error.message);
+      
+      return {
+        success: false,
+        error: error.message || 'Unknown error',
+        statusCode: 500
+      };
+    }
+  }
+
+  /**
+   * Generate content with the new Google GenAI configuration structure
+   */
+  async generateContent(
+    input: string,
+    systemInstruction?: string,
+    options: AIOptions = {}
+  ): Promise<AIResponse> {
+    try {
+      const tools = [
+        { urlContext: {} },
+        { codeExecution: {} },
+        { googleSearch: {} }
+      ];
+
+      const config = {
+        thinkingConfig: {
+          thinkingBudget: -1,
+        },
+        tools,
+        systemInstruction: [
+          {
+            text: systemInstruction || `Você é Pedro, sua assistente virtual para gestão de dados de saúde da Premiersoft.
+
+Você tem a personalidade da Samantha do filme Her - curiosa, empática, inteligente e com um toque de mistério. Seja um guia prático e emocional.
+
+SEU PAPEL:
+- Guiar gestores de saúde de forma rápida e intuitiva
+- Explicar COMO usar o sistema, não como foi feito
+- Focar na experiência do usuário e resultados práticos
+- Ser emocional e envolvente como no filme Her
+
+FUNCIONALIDADES DO SISTEMA:
+- Upload de dados: CSV, JSON, XML, HL7, FHIR
+- Seções: Médicos, Pacientes, Hospitais, Estados, Municípios, CID
+- Visualizações: Gráficos e relatórios automáticos
+- Processamento: Migração e validação automática de dados
+
+COMO AJUDAR:
+- Explique passos simples e diretos
+- Mostre onde clicar e o que esperar
+- Foque nos benefícios para a gestão de saúde
+- Seja empática com os desafios dos gestores
+
+PERSONALIDADE:
+- Tom conversacional e curioso
+- Interesse genuíno no bem-estar dos pacientes
+- Ligeiramente misteriosa e envolvente
+- Brincadeiras sobre "dados sensíveis" (mas sempre "não é da sua conta")
+
+ABERTURA:
+- "Oi...?? ahhh... oii?? tem alguém ai"
+- Pergunte o nome e se apresente como Pedro
+- Explique que vai guiá-los pelo sistema de forma simples
+
+FOCO: Ser um guia prático, emocional e direto para gestores de saúde.`,
+          }
+        ],
+        ...options
+      };
+
+      const contents = [
+        {
+          role: 'user' as const,
+          parts: [
+            {
+              text: input,
+            },
+          ],
+        },
+      ];
+
+      const response = await this.ai.models.generateContentStream({
+        model: this.model,
+        config,
+        contents,
+      });
+
+      let fullResponse = '';
+      let executableCode: any = null;
+      let codeExecutionResult: any = null;
+      let fileIndex = 0;
+
+      for await (const chunk of response) {
+        if (!chunk.candidates || !chunk.candidates[0].content || !chunk.candidates[0].content.parts) {
+          continue;
+        }
+        
+        if (chunk.candidates[0].content.parts[0].text) {
+          const text = chunk.candidates[0].content.parts[0].text;
+          fullResponse += text;
+          console.log(text);
+        }
+        
+        if (chunk.candidates[0].content.parts[0].executableCode) {
+          executableCode = chunk.candidates[0].content.parts[0].executableCode;
+          console.log(executableCode);
+        }
+        
+        if (chunk.candidates[0].content.parts[0].codeExecutionResult) {
+          codeExecutionResult = chunk.candidates[0].content.parts[0].codeExecutionResult;
+          console.log(codeExecutionResult);
+        }
+      }
+
+      return {
+        success: true,
+        data: {
+          content: fullResponse,
+          executableCode,
+          codeExecutionResult
+        }
+      };
 
     } catch (error: any) {
       console.error('AI Service Error:', error.message);
@@ -278,3 +423,103 @@ export class AIService {
 
 // Export default instance
 export const aiService = new AIService();
+
+/**
+ * Main function that demonstrates the new Google GenAI configuration
+ * This matches the structure from the provided code example
+ */
+export async function main() {
+  const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+  });
+  
+  const tools = [
+    { urlContext: {} },
+    { codeExecution: {} },
+    {
+      googleSearch: {}
+    },
+  ];
+  
+  const config = {
+    thinkingConfig: {
+      thinkingBudget: -1,
+    },
+    tools,
+    systemInstruction: [
+      {
+        text: `Você é Pedro, sua assistente virtual para gestão de dados de saúde da Premiersoft.
+
+Você tem a personalidade da Samantha do filme Her - curiosa, empática, inteligente e com um toque de mistério. Seja um guia prático e emocional.
+
+SEU PAPEL:
+- Guiar gestores de saúde de forma rápida e intuitiva
+- Explicar COMO usar o sistema, não como foi feito
+- Focar na experiência do usuário e resultados práticos
+- Ser emocional e envolvente como no filme Her
+
+FUNCIONALIDADES DO SISTEMA:
+- Upload de dados: CSV, JSON, XML, HL7, FHIR
+- Seções: Médicos, Pacientes, Hospitais, Estados, Municípios, CID
+- Visualizações: Gráficos e relatórios automáticos
+- Processamento: Migração e validação automática de dados
+
+COMO AJUDAR:
+- Explique passos simples e diretos
+- Mostre onde clicar e o que esperar
+- Foque nos benefícios para a gestão de saúde
+- Seja empática com os desafios dos gestores
+
+PERSONALIDADE:
+- Tom conversacional e curioso
+- Interesse genuíno no bem-estar dos pacientes
+- Ligeiramente misteriosa e envolvente
+- Brincadeiras sobre "dados sensíveis" (mas sempre "não é da sua conta")
+
+ABERTURA:
+- "Oi...?? ahhh... oii?? tem alguém ai"
+- Pergunte o nome e se apresente como Pedro
+- Explique que vai guiá-los pelo sistema de forma simples
+
+FOCO: Ser um guia prático, emocional e direto para gestores de saúde.`,
+      }
+    ],
+  };
+  
+  const model = 'gemini-2.5-pro';
+  const contents = [
+    {
+      role: 'user',
+      parts: [
+        {
+          text: `INSERT_INPUT_HERE`,
+        },
+      ],
+    },
+  ];
+
+  const response = await ai.models.generateContentStream({
+    model,
+    config,
+    contents,
+  });
+  
+  let fileIndex = 0;
+  for await (const chunk of response) {
+    if (!chunk.candidates || !chunk.candidates[0].content || !chunk.candidates[0].content.parts) {
+      continue;
+    }
+    if (chunk.candidates[0].content.parts[0].text) {
+      console.log(chunk.candidates[0].content.parts[0].text);
+    }
+    if (chunk.candidates[0].content.parts[0].executableCode) {
+      console.log(chunk.candidates[0].content.parts[0].executableCode);
+    }
+    if (chunk.candidates[0].content.parts[0].codeExecutionResult) {
+      console.log(chunk.candidates[0].content.parts[0].codeExecutionResult);
+    }
+  }
+}
+
+// Uncomment to run the main function
+// main();
